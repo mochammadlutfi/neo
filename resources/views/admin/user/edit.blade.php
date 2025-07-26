@@ -3,17 +3,28 @@
     @endpush
 
     <div class="content">
-        <form method="POST" action="{{ route('admin.user.update', $data->id) }}">
-            @csrf
-            <div class="content-heading d-flex justify-content-between align-items-center">
-                <span>Ubah Konsumen</span>
-                <div class="space-x-1">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fa fa-check me-1"></i>
+        <!-- Page Header -->
+        <div class="block block-rounded">
+            <div class="block-header">
+                <h3 class="block-title fs-base fw-bold">
+                    <i class="fa fa-user-edit me-2 text-primary"></i>
+                    Ubah Konsumen: {{ $data->nama }}
+                </h3>
+                <div class="block-options">
+                    <a href="{{ route('admin.user.index') }}" class="btn btn-sm btn-secondary fs-base me-2">
+                        <i class="fa fa-arrow-left me-1"></i>
+                        Kembali
+                    </a>
+                    <button type="submit" form="userEditForm" class="btn btn-sm btn-primary fs-base">
+                        <i class="fa fa-save me-1"></i>
                         Simpan
                     </button>
                 </div>
             </div>
+        </div>
+        
+        <form method="POST" action="{{ route('admin.user.update', $data->id) }}" id="userEditForm">
+            @csrf
             <div class="block block-rounded">
                 <div class="block-content">
                     <div class="row">

@@ -1,18 +1,22 @@
 <x-app-layout>
     <div class="content">
-        <div class="content-heading d-flex justify-content-between align-items-center">
-            <div class="content-title">
-                Kelola Pesanan
-            </div>
-            <div class="space-x">
-                <a href="{{ route('admin.order.create') }}" class="btn btn-sm btn-alt-primary">
-                    <i class="fa fa-plus me-1"></i>
-                    Tambah
-                </a>
-                <button type="button" class="btn btn-sm btn-alt-info" data-bs-toggle="modal" data-bs-target="#reportModal">
-                    <i class="fa fa-print me-1"></i>
-                    Download Report
-                </button>
+        <!-- Page Header -->
+        <div class="block block-rounded">
+            <div class="block-header">
+                <h3 class="block-title fs-base fw-bold">
+                    <i class="fa fa-shopping-cart me-2 text-primary"></i>
+                    Kelola Pesanan
+                </h3>
+                <div class="block-options">
+                    <a href="{{ route('admin.order.create') }}" class="btn btn-sm btn-primary fs-base me-2">
+                        <i class="fa fa-plus me-1"></i>
+                        Tambah
+                    </a>
+                    <button type="button" class="btn btn-sm btn-info fs-base" data-bs-toggle="modal" data-bs-target="#reportModal">
+                        <i class="fa fa-print me-1"></i>
+                        Download Report
+                    </button>
+                </div>
             </div>
         </div>
         <div class="block block-rounded">

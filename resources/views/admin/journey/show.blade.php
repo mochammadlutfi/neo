@@ -1,13 +1,22 @@
 <x-app-layout>
     <div class="content">
-        <div class="content-heading d-flex justify-content-between align-items-center">
-            <div class="content-title">
-                Customer Journey
-            </div>
-            <div class="space-x">
-                <a class="btn btn-alt-primary btn-sm" target="_blank" href="{{ route('admin.journey.pdf', $data->id)}}">
-                    Download PDF
-                </a>
+        <!-- Page Header -->
+        <div class="block block-rounded">
+            <div class="block-header">
+                <h3 class="block-title fs-base fw-bold">
+                    <i class="fa fa-route me-2 text-primary"></i>
+                    Customer Journey: {{ $data->user->nama }}
+                </h3>
+                <div class="block-options">
+                    <a href="{{ route('admin.journey.index') }}" class="btn btn-sm btn-secondary fs-base me-2">
+                        <i class="fa fa-arrow-left me-1"></i>
+                        Kembali
+                    </a>
+                    <a class="btn btn-sm btn-primary fs-base" target="_blank" href="{{ route('admin.journey.pdf', $data->id)}}">
+                        <i class="fa fa-download me-1"></i>
+                        Download PDF
+                    </a>
+                </div>
             </div>
         </div>
         <div class="block rounded">

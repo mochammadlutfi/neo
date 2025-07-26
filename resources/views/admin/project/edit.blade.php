@@ -5,14 +5,15 @@
     <link rel="stylesheet" href="/js/plugins/flatpickr/flatpickr.min.css">
     @endpush
 
-    <div class="bg-gd-dusk">
-        <div class="content text-center">
-            <div class="py-5">
-                <h1 class="fw-bold text-white mb-2">Ubah Project</h1>
+    <div class="content">
+        <div class="block block-rounded">
+            <div class="block-header">
+                <h3 class="block-title fs-base fw-bold">
+                    <i class="fa fa-briefcase me-2 text-primary"></i>
+                    Ubah Project
+                </h3>
             </div>
         </div>
-    </div>
-    <div class="content">
         <div class="block block-rounded">
             <div class="block-content p-4">
                 <form method="POST" action="{{ route('admin.project.update', $data->id) }}" enctype="multipart/form-data">

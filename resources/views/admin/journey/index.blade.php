@@ -1,14 +1,18 @@
 <x-app-layout>
     <div class="content">
-        <div class="content-heading d-flex justify-content-between align-items-center">
-            <div class="content-title">
-                Customer Journey
-            </div>
-            <div class="space-x">
-                <a href="{{ route('admin.journey.create') }}" class="btn rounded-pill btn-alt-primary">
-                    <i class="fa fa-plus me-1"></i>
-                    Tambah
-                </a>
+        <!-- Page Header -->
+        <div class="block block-rounded">
+            <div class="block-header">
+                <h3 class="block-title fs-base fw-bold">
+                    <i class="fa fa-route me-2 text-primary"></i>
+                    Customer Journey
+                </h3>
+                <div class="block-options">
+                    <a href="{{ route('admin.journey.create') }}" class="btn btn-sm btn-primary fs-base">
+                        <i class="fa fa-plus me-1"></i>
+                        Tambah Journey
+                    </a>
+                </div>
             </div>
         </div>
         <div class="block block-rounded">

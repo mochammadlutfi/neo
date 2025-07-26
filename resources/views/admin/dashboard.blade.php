@@ -1,8 +1,12 @@
 <x-app-layout>
     <div class="content">
-        <div class="content-heading d-flex justify-content-between align-items-center">
-            <div class="content-title">
-                Dashboard
+        <!-- Page Header -->
+        <div class="block block-rounded">
+            <div class="block-header">
+                <h3 class="block-title fs-base fw-bold">
+                    <i class="fa fa-tachometer-alt me-2 text-primary"></i>
+                    Dashboard
+                </h3>
             </div>
         </div>
         <div class="row">

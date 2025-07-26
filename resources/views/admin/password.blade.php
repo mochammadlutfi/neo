@@ -3,9 +3,13 @@
     @endpush
 
     <div class="content">
-        <div class="content-heading d-flex justify-content-between align-items-center">
-            <span>Ubah Password</span>
-            <div class="space-x-1">
+        <!-- Page Header -->
+        <div class="block block-rounded">
+            <div class="block-header">
+                <h3 class="block-title fs-base fw-bold">
+                    <i class="fa fa-key me-2 text-primary"></i>
+                    Ubah Password
+                </h3>
             </div>
         </div>
         <div class="block block-rounded">

@@ -137,6 +137,8 @@ Route::prefix('/admin')->name('admin.')->namespace('Admin')->group(function(){
                 Route::post('{id}/confirm','ProjectController@confirm')->name('confirm');
                 Route::post('{id}/update','ProjectController@update')->name('update');
                 Route::delete('/{id}/delete','ProjectController@destroy')->name('delete');
+                Route::get('/task/{taskId}/engagement','ProjectController@getEngagement')->name('task.engagement.get');
+                Route::post('/task/{taskId}/engagement','ProjectController@updateEngagement')->name('task.engagement');
             });
 
             

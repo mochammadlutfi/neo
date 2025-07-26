@@ -1,12 +1,20 @@
 <x-app-layout>
-    <div class="bg-gd-dusk">
-        <div class="content text-center">
-            <div class="py-6">
-                <h1 class="fw-bold text-white mb-2">Riwayat Pemesanan</h1>
+    <div class="content">
+        <!-- Page Header -->
+        <div class="block block-rounded">
+            <div class="block-header">
+                <h3 class="block-title fs-base fw-bold">
+                    <i class="fa fa-history me-2 text-primary"></i>
+                    Riwayat Pemesanan
+                </h3>
+                <div class="block-options">
+                    <a href="{{ route('admin.user.index') }}" class="btn btn-sm btn-secondary fs-base">
+                        <i class="fa fa-arrow-left me-1"></i>
+                        Kembali
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="content">
         <div class="block block-rounded">
             <div class="block-content p-3">
                 <table class="table table-bordered datatable w-100">

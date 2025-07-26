@@ -1,12 +1,17 @@
 <x-user-layout>
-    <div class="block rounded">
+    <div class="block block-rounded">
         <div class="block-header">
-            <h3 class="block-title fw-semibold">Pembayaran</h3>
+            <h3 class="block-title fs-base fw-bold">
+                <i class="fa fa-wallet me-2 text-primary"></i>
+                Pembayaran
+            </h3>
             <div class="block-options">
-
+                <span class="fs-base text-muted">Total: {{ $data->count() }} pembayaran</span>
             </div>
         </div>
-        <div class="block-content">
+    </div>
+    <div class="block rounded">
+        <div class="block-content p-4">
             <table class="table table-bordered w-100 datatable">
                 <thead>
                     <tr>

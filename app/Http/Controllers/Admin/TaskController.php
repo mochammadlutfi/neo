@@ -154,67 +154,9 @@ class TaskController extends Controller
     public function show($id)
     {
         $data = Task::where('id', $id)->first();
-
-        if($data->status == 'Pending'){
-            $status = '<span class="badge bg-primary">Pending</span>';
-        }else if($data->status == 'Selesai'){
-            $status = '<span class="badge bg-success">Diterima</span>';
-        }else{
-            $status = '<span class="badge bg-secondary">Ditolak</span>';
-        }
         
-        if($data->status_upload){
-            $status_upload = '<span class="badge bg-primary">Sudah Upload</span>';
-        }else {
-            $status_upload = '<span class="badge bg-danger">Belum Upload</span>';
-        }
-
-        $html = '<div class="block-content p-4">
-            <div class="row mb-3">
-                <div class="col-md-12">
-                    <div class="row mb-3">
-                        <label class="col-sm-5 fw-medium">Nama Tugas</label>
-                        <div class="col-sm-7">: '. $data->nama .'</div>
-                    </div>
-                    <div class="row mb-3">
-                        <label class="col-sm-5 fw-medium">Link Brief</label>
-                        <div class="col-sm-7">: 
-                            <a href="'. $data->link_brief .'" target="_blank" class="badge bg-primary px-3 text-white">Lihat Brief</a>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label class="col-sm-5 fw-medium">Status</label>
-                        <div class="col-sm-7">: '. $status .'</div>
-                    </div>
-                    <div class="row mb-3">
-                        <label class="col-sm-5 fw-medium">Tanggal Tempo</label>
-                        <div class="col-sm-7">
-                            : '. Carbon::parse($data->tgl_tempo)->translatedFormat('d F Y') .'
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label class="col-sm-5 fw-medium">Tanggal Upload</label>
-                        <div class="col-sm-7">
-                            : '. Carbon::parse($data->tgl_upload)->translatedFormat('d F Y H:i') .' WIB
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label class="col-sm-5 fw-medium">Status Upload</label>
-                        <div class="col-sm-7">: '. $status_upload .'</div>
-                    </div>
-                    <div class="row mb-3">
-                        <label class="col-sm-5 fw-medium">File Task</label>
-                        <div class="col-sm-7">: 
-                            <a href="'. $data->file .'" target="_blank" class="badge bg-primary px-3 text-white">
-                                Lihat File
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>';
-
-        echo $html;
+        // Return admin task detail component for AJAX requests
+        return view('components.admin-task-detail-content', ['data' => $data])->render();
     }
 
     

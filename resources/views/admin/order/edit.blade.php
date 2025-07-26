@@ -5,17 +5,30 @@
     <link rel="stylesheet" href="/js/plugins/flatpickr/flatpickr.min.css">
     @endpush
 
-    <div class="bg-gd-dusk">
-        <div class="content text-center">
-            <div class="py-4">
-                <h1 class="fw-bold text-white mb-2">Ubah Pesanan</h1>
+    <div class="content">
+        <!-- Page Header -->
+        <div class="block block-rounded">
+            <div class="block-header">
+                <h3 class="block-title fs-base fw-bold">
+                    <i class="fa fa-edit me-2 text-primary"></i>
+                    Ubah Pesanan: {{ $data->nomor }}
+                </h3>
+                <div class="block-options">
+                    <a href="{{ route('admin.order.index') }}" class="btn btn-sm btn-secondary fs-base me-2">
+                        <i class="fa fa-arrow-left me-1"></i>
+                        Kembali
+                    </a>
+                    <button type="submit" form="orderEditForm" class="btn btn-sm btn-primary fs-base">
+                        <i class="fa fa-save me-1"></i>
+                        Simpan
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="content">
+        
         <div class="block block-rounded">
             <div class="block-content p-4">
-                <form method="POST" action="{{ route('admin.order.update', $data->id) }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('admin.order.update', $data->id) }}" enctype="multipart/form-data" id="orderEditForm">
                     @csrf
                     <div class="row">
                         <div class="col-6">

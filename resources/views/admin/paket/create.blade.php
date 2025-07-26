@@ -12,12 +12,29 @@
     @endpush
 
     <div class="content">
-        <div class="content-heading d-flex justify-content-between align-items-center">
-            <span>{{ isset($data) ? 'Edit Paket' : 'Tambah Paket' }}</span>
+        <!-- Page Header -->
+        <div class="block block-rounded">
+            <div class="block-header">
+                <h3 class="block-title fs-base fw-bold">
+                    <i class="fa fa-plus me-2 text-primary"></i>
+                    {{ isset($data) ? 'Edit Paket' : 'Tambah Paket' }}
+                </h3>
+                <div class="block-options">
+                    <a href="{{ route('admin.paket.index') }}" class="btn btn-sm btn-secondary fs-base me-2">
+                        <i class="fa fa-arrow-left me-1"></i>
+                        Kembali
+                    </a>
+                    <button type="submit" form="paketForm" class="btn btn-sm btn-primary fs-base">
+                        <i class="fa fa-save me-1"></i>
+                        Simpan
+                    </button>
+                </div>
+            </div>
         </div>
+        
         <div class="block block-rounded">
             <div class="block-content p-4">
-                <form method="POST" action="{{ route('admin.paket.store') }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('admin.paket.store') }}" enctype="multipart/form-data" id="paketForm">
                     @csrf
                     <div class="row">
                         <div class="col-4">

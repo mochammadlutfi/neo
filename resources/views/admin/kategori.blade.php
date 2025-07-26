@@ -1,12 +1,18 @@
 <x-app-layout>
     <div class="content">
-        <div class="content-heading d-flex justify-content-between align-items-center">
-            <span>Data Kategori</span>
-            <div class="space-x-1">
-                <button type="button" class="btn btn-sm btn-primary" onclick="create()">
-                    <i class="fa fa-plus me-1"></i>
-                    Tambah Kategori
-                </button>
+        <!-- Page Header -->
+        <div class="block block-rounded">
+            <div class="block-header">
+                <h3 class="block-title fs-base fw-bold">
+                    <i class="fa fa-tags me-2 text-primary"></i>
+                    Data Kategori
+                </h3>
+                <div class="block-options">
+                    <button type="button" class="btn btn-sm btn-primary fs-base" onclick="create()">
+                        <i class="fa fa-plus me-1"></i>
+                        Tambah Kategori
+                    </button>
+                </div>
             </div>
         </div>
         <div class="block block-rounded">

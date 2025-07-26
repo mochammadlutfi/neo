@@ -1,14 +1,18 @@
 <x-app-layout>
     <div class="content">
-        <div class="content-heading d-flex justify-content-between align-items-center">
-            <div class="content-title">
-                Kelola Staff
-            </div>
-            <div class="space-x">
-                <a href="{{ route('admin.staff.create') }}" class="btn btn-sm btn-alt-primary">
-                    <i class="fa fa-plus me-1"></i>
-                    Tambah
-                </a>
+        <!-- Page Header -->
+        <div class="block block-rounded">
+            <div class="block-header">
+                <h3 class="block-title fs-base fw-bold">
+                    <i class="fa fa-user-tie me-2 text-primary"></i>
+                    Kelola Staff
+                </h3>
+                <div class="block-options">
+                    <a href="{{ route('admin.staff.create') }}" class="btn btn-sm btn-primary fs-base">
+                        <i class="fa fa-plus me-1"></i>
+                        Tambah Staff
+                    </a>
+                </div>
             </div>
         </div>
         <div class="block block-rounded">

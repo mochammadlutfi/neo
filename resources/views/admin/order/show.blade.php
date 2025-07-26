@@ -1,18 +1,26 @@
 <x-app-layout>
     <div class="content">
-        <div class="content-heading d-flex justify-content-between align-items-center">
-            <div class="content-title">
-                Detail Pesanan
-            </div>
-            <div class="space-x">
-                <a href="{{ route('admin.order.edit', $data->id) }}" class="btn btn-sm btn-alt-primary me-2">
-                    <i class="fa fa-edit me-1"></i>
-                    Ubah
-                </a>
-                <button type="button" class="btn btn-sm btn-alt-danger" onclick="hapus()">
-                    <i class="fa fa-close me-1"></i>
-                    Hapus
-                </button>
+        <!-- Page Header -->
+        <div class="block block-rounded">
+            <div class="block-header">
+                <h3 class="block-title fs-base fw-bold">
+                    <i class="fa fa-file-alt me-2 text-primary"></i>
+                    Detail Pesanan: {{ $data->nomor }}
+                </h3>
+                <div class="block-options">
+                    <a href="{{ route('admin.order.index') }}" class="btn btn-sm btn-secondary fs-base me-2">
+                        <i class="fa fa-arrow-left me-1"></i>
+                        Kembali
+                    </a>
+                    <a href="{{ route('admin.order.edit', $data->id) }}" class="btn btn-sm btn-warning fs-base me-2">
+                        <i class="fa fa-edit me-1"></i>
+                        Ubah
+                    </a>
+                    <button type="button" class="btn btn-sm btn-danger fs-base" onclick="hapus()">
+                        <i class="fa fa-trash me-1"></i>
+                        Hapus
+                    </button>
+                </div>
             </div>
         </div>
         <div class="block block-rounded">

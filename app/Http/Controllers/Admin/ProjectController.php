@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Storage;
 use Carbon\Carbon;
 use App\Models\Project;
+use App\Models\Task;
 
 
 class ProjectController extends Controller
@@ -21,48 +22,28 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->ajax()) {
+        if ($request->ajax() || $request->has('ajax')) {
             $order_id = $request->order_id;
-            $data = Project::with(['user', 'order'])->withCount('task')
+            
+            $projects = Project::with(['user', 'order' => function($q){
+                return $q->with('paket');
+            }, 'task' => function($q) {
+                $q->select('project_id', 'status', DB::raw('COUNT(*) as count'))
+                  ->groupBy('project_id', 'status');
+            }])
+            ->withCount(['task', 'task as completed_tasks' => function($q) {
+                $q->where('status', 'Disetujui');
+            }, 'task as pending_tasks' => function($q) {
+                $q->where('status', 'Draft');
+            }])
             ->when($order_id, function($q) use ($order_id) {
                 return $q->where('order_id', $order_id);
             })->latest()->get();
 
-            return DataTables::of($data)
-                ->addIndexColumn()
-                ->addColumn('action', function($row){
-                    $btn = '<a class="btn btn-primary btn-sm" href="'. route('admin.project.show', $row->id).'"><i class="si si-eye me-1"></i>Detail</a>';
-                    return $btn; 
-                })
-                ->editColumn('tgl_training', function ($row) {
-                    $tgl_mulai = Carbon::parse($row->tgl_mulai);
-                    $tgl_selesai = Carbon::parse($row->tgl_selesai);
-                    if($tgl_mulai->eq($tgl_selesai) || $row->tgl_selesai == null){
-                        return $tgl_mulai->translatedformat('d M Y');
-                    }else{
-                        return $tgl_mulai->translatedformat('d') . ' - '. $tgl_selesai->translatedformat('d M Y');
-                    }
-                })
-                ->editColumn('tgl_daftar', function ($row) {
-                    $tgl_mulai = Carbon::parse($row->tgl_mulai_daftar);
-                    $tgl_selesai = Carbon::parse($row->tgl_selesai_daftar);
-                    if($tgl_mulai->eq($tgl_selesai) || $row->tgl_selesai_daftar == null){
-                        return $tgl_mulai->translatedformat('d M Y');
-                    }else{
-                        return $tgl_mulai->translatedformat('d M') . ' - '. $tgl_selesai->translatedformat('d M Y');
-                    }
-                })
-                ->editColumn('status', function ($row) {
-                    if($row->status == 'draft'){
-                        return '<span class="badge bg-warning">Draft</span>';
-                    }else if($row->status == 'buka'){
-                        return '<span class="badge bg-primary">Buka</span>';
-                    }else{
-                        return '<span class="badge bg-danger">Tutup</span>';
-                    }
-                })
-                ->rawColumns(['action', 'status']) 
-                ->make(true);
+            return response()->json([
+                'data' => $projects,
+                'success' => true
+            ]);
         }
         return view('admin.project.index');
     }
@@ -128,10 +109,15 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        $data = Project::where('id', $id)->first();
-        // dd();
+        $data = Project::with(['user', 'order' => function($q){
+            return $q->with('paket');
+        }])->where('id', $id)->first();
+        
+        $task = $data->task()->orderBy('created_at', 'DESC')->get();
+        
         return view('admin.project.show',[
             'data' => $data,
+            'task' => $task
         ]);
     }
 
@@ -233,6 +219,92 @@ class ProjectController extends Controller
         return response()->json([
             'fail' => false,
             'pesan' => 'Berhasil Hapus Data!',
+        ]);
+    }
+
+    /**
+     * Get engagement data for a task
+     */
+    public function getEngagement($taskId)
+    {
+        $task = Task::where('id', $taskId)->first();
+        if (!$task) {
+            return response()->json([
+                'fail' => true,
+                'pesan' => 'Task tidak ditemukan!'
+            ]);
+        }
+
+        return response()->json([
+            'fail' => false,
+            'data' => [
+                'total_view' => $task->total_view,
+                'total_likes' => $task->total_likes,
+                'total_comments' => $task->total_comments,
+                'total_share' => $task->total_share,
+            ]
+        ]);
+    }
+
+    /**
+     * Update engagement data for a task
+     */
+    public function updateEngagement(Request $request, $taskId)
+    {
+        $rules = [
+            'total_view' => 'required|integer|min:0',
+            'total_likes' => 'required|integer|min:0',
+            'total_comments' => 'required|integer|min:0',
+            'total_share' => 'required|integer|min:0',
+        ];
+
+        $pesan = [
+            'total_view.required' => 'Total View harus diisi!',
+            'total_view.integer' => 'Total View harus berupa angka!',
+            'total_likes.required' => 'Total Likes harus diisi!',
+            'total_likes.integer' => 'Total Likes harus berupa angka!',
+            'total_comments.required' => 'Total Comments harus diisi!',
+            'total_comments.integer' => 'Total Comments harus berupa angka!',
+            'total_share.required' => 'Total Share harus diisi!',
+            'total_share.integer' => 'Total Share harus berupa angka!',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $pesan);
+        if ($validator->fails()){
+            return response()->json([
+                'fail' => true,
+                'errors' => $validator->errors()
+            ]);
+        }
+
+        DB::beginTransaction();
+        try{
+            $task = Task::where('id', $taskId)->first();
+            if (!$task) {
+                return response()->json([
+                    'fail' => true,
+                    'pesan' => 'Task tidak ditemukan!'
+                ]);
+            }
+
+            $task->total_view = $request->total_view;
+            $task->total_likes = $request->total_likes;
+            $task->total_comments = $request->total_comments;
+            $task->total_share = $request->total_share;
+            $task->save();
+
+        }catch(\QueryException $e){
+            DB::rollback();
+            return response()->json([
+                'fail' => true,
+                'pesan' => 'Gagal update engagement data!'
+            ]);
+        }
+
+        DB::commit();
+        return response()->json([
+            'fail' => false,
+            'pesan' => 'Engagement data berhasil diupdate!'
         ]);
     }
 

@@ -4,18 +4,28 @@
     <link rel="stylesheet" href="/js/plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="/js/plugins/flatpickr/flatpickr.min.css">
     @endpush
-
-    <div class="bg-gd-dusk">
-        <div class="content text-center">
-            <div class="py-5">
-                <h1 class="fw-bold text-white mb-2">Tambah Project</h1>
-            </div>
-        </div>
-    </div>
     <div class="content">
         <div class="block block-rounded">
+            <div class="block-header">
+                <h3 class="block-title fs-base fw-bold">
+                    <i class="fa fa-plus me-2 text-primary"></i>
+                    Tambah Project
+                </h3>
+                <div class="block-options">
+                    <a href="{{ route('admin.project.index') }}" class="btn btn-sm btn-secondary fs-base me-2">
+                        <i class="fa fa-arrow-left me-1"></i>
+                        Kembali
+                    </a>
+                    <button type="submit" form="projectForm" class="btn btn-sm btn-primary fs-base">
+                        <i class="fa fa-save me-1"></i>
+                        Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="block block-rounded">
             <div class="block-content p-4">
-                <form method="POST" action="{{ route('admin.project.store') }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('admin.project.store') }}" enctype="multipart/form-data" id="projectForm">
                     @csrf
                     <div class="row">
                         <div class="col-6">

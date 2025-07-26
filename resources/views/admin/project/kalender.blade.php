@@ -33,19 +33,32 @@
             </div>
         </div>
     </div>
-    <div class="modal" id="modal-show" aria-labelledby="modal-show" style="display: none;" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
+    <!-- Task Detail Modal Container -->
+    <div id="task-modal-container">
+        <!-- Task detail modal will be loaded here dynamically -->
+    </div>
+    
+    <!-- Generic Task Detail Modal -->
+    <div class="modal fade" id="modal-show" tabindex="-1" aria-labelledby="modal-showLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="block block-rounded shadow-none mb-0">
-                    <div class="block-header bg-gd-dusk">
-                        <h3 class="block-title text-white">Detail Tugas</h3>
+                    <!-- Modal Header -->
+                    <div class="block-header block-header-default">
+                        <h3 class="block-title">
+                            <i class="fa fa-tasks me-2 text-primary"></i>
+                            Detail Tugas
+                        </h3>
                         <div class="block-options">
-                            <button type="button" class="text-white btn-block-option" data-bs-dismiss="modal" aria-label="Close">
+                            <button type="button" class="btn-block-option" data-bs-dismiss="modal" aria-label="Close">
                                 <i class="fa fa-times"></i>
                             </button>
                         </div>
                     </div>
-                    <div id="detail">
+
+                    <!-- Modal Content -->
+                    <div class="block-content p-4" id="detail">
+                        <!-- Content will be loaded via AJAX -->
                     </div>
                 </div>
             </div>
