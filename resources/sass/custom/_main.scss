@@ -1,0 +1,25 @@
+//
+// Custom Main
+//
+// Add your own styles or override existing ones
+//
+// This file is included last, so you have access
+// to all Bootstrap and Codebase functions/mixins/styles etc
+// --------------------------------------------------
+
+// If you have many custom styles, you can create and import additional files
+// For example you can create _component1.scss and include it as follows:
+// @import 'component1';
+
+.bg-gd-main {
+    background: #4757d0 linear-gradient(135deg, #4757d0 0%, #c450c2 100%) !important;
+}
+
+.btn-gd-main {
+    background: #4757d0 linear-gradient(135deg, #4757d0 0%, #c450c2 100%) !important;
+    color : white;
+
+    :hover {
+        color : white;
+    }
+}

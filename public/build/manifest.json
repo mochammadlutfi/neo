@@ -1,0 +1,123 @@
+{
+  "__commonjsHelpers-cd042863.js": {
+    "file": "assets/_commonjsHelpers-cd042863.js"
+  },
+  "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff": {
+    "file": "assets/bootstrap-icons-999550fa.woff",
+    "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff"
+  },
+  "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2": {
+    "file": "assets/bootstrap-icons-cfe45b98.woff2",
+    "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2"
+  },
+  "resources/fonts/fontawesome/fa-brands-400.ttf": {
+    "file": "assets/fa-brands-400-2ef6fdde.ttf",
+    "src": "resources/fonts/fontawesome/fa-brands-400.ttf"
+  },
+  "resources/fonts/fontawesome/fa-brands-400.woff2": {
+    "file": "assets/fa-brands-400-f4617423.woff2",
+    "src": "resources/fonts/fontawesome/fa-brands-400.woff2"
+  },
+  "resources/fonts/fontawesome/fa-regular-400.ttf": {
+    "file": "assets/fa-regular-400-12dea17b.ttf",
+    "src": "resources/fonts/fontawesome/fa-regular-400.ttf"
+  },
+  "resources/fonts/fontawesome/fa-regular-400.woff2": {
+    "file": "assets/fa-regular-400-7ba24c41.woff2",
+    "src": "resources/fonts/fontawesome/fa-regular-400.woff2"
+  },
+  "resources/fonts/fontawesome/fa-solid-900.ttf": {
+    "file": "assets/fa-solid-900-67a880b4.ttf",
+    "src": "resources/fonts/fontawesome/fa-solid-900.ttf"
+  },
+  "resources/fonts/fontawesome/fa-solid-900.woff2": {
+    "file": "assets/fa-solid-900-e2c5cf54.woff2",
+    "src": "resources/fonts/fontawesome/fa-solid-900.woff2"
+  },
+  "resources/fonts/poppins/poppins-v20-latin-300.woff2": {
+    "file": "assets/poppins-v20-latin-300-78bc3aa7.woff2",
+    "src": "resources/fonts/poppins/poppins-v20-latin-300.woff2"
+  },
+  "resources/fonts/poppins/poppins-v20-latin-500.woff2": {
+    "file": "assets/poppins-v20-latin-500-cd36de20.woff2",
+    "src": "resources/fonts/poppins/poppins-v20-latin-500.woff2"
+  },
+  "resources/fonts/poppins/poppins-v20-latin-600.woff2": {
+    "file": "assets/poppins-v20-latin-600-f4e80d9d.woff2",
+    "src": "resources/fonts/poppins/poppins-v20-latin-600.woff2"
+  },
+  "resources/fonts/poppins/poppins-v20-latin-700.woff2": {
+    "file": "assets/poppins-v20-latin-700-9338e65f.woff2",
+    "src": "resources/fonts/poppins/poppins-v20-latin-700.woff2"
+  },
+  "resources/fonts/poppins/poppins-v20-latin-regular.woff2": {
+    "file": "assets/poppins-v20-latin-regular-7d93459d.woff2",
+    "src": "resources/fonts/poppins/poppins-v20-latin-regular.woff2"
+  },
+  "resources/fonts/simple-line-icons/Simple-Line-Icons.eot": {
+    "file": "assets/Simple-Line-Icons-1c823013.eot",
+    "src": "resources/fonts/simple-line-icons/Simple-Line-Icons.eot"
+  },
+  "resources/fonts/simple-line-icons/Simple-Line-Icons.svg": {
+    "file": "assets/Simple-Line-Icons-b381f90a.svg",
+    "src": "resources/fonts/simple-line-icons/Simple-Line-Icons.svg"
+  },
+  "resources/fonts/simple-line-icons/Simple-Line-Icons.ttf": {
+    "file": "assets/Simple-Line-Icons-3f501ddb.ttf",
+    "src": "resources/fonts/simple-line-icons/Simple-Line-Icons.ttf"
+  },
+  "resources/fonts/simple-line-icons/Simple-Line-Icons.woff": {
+    "file": "assets/Simple-Line-Icons-14b825d7.woff",
+    "src": "resources/fonts/simple-line-icons/Simple-Line-Icons.woff"
+  },
+  "resources/fonts/simple-line-icons/Simple-Line-Icons.woff2": {
+    "file": "assets/Simple-Line-Icons-104673f4.woff2",
+    "src": "resources/fonts/simple-line-icons/Simple-Line-Icons.woff2"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-85c8d13f.js",
+    "imports": [
+      "__commonjsHelpers-cd042863.js"
+    ],
+    "isEntry": true,
+    "src": "resources/js/app.js"
+  },
+  "resources/js/codebase/app.js": {
+    "file": "assets/app-f4df7b24.js",
+    "imports": [
+      "__commonjsHelpers-cd042863.js"
+    ],
+    "isEntry": true,
+    "src": "resources/js/codebase/app.js"
+  },
+  "resources/sass/codebase/themes/corporate.scss": {
+    "file": "assets/corporate-297b6686.css",
+    "isEntry": true,
+    "src": "resources/sass/codebase/themes/corporate.scss"
+  },
+  "resources/sass/codebase/themes/earth.scss": {
+    "file": "assets/earth-d7d49cc2.css",
+    "isEntry": true,
+    "src": "resources/sass/codebase/themes/earth.scss"
+  },
+  "resources/sass/codebase/themes/elegance.scss": {
+    "file": "assets/elegance-1e861185.css",
+    "isEntry": true,
+    "src": "resources/sass/codebase/themes/elegance.scss"
+  },
+  "resources/sass/codebase/themes/flat.scss": {
+    "file": "assets/flat-a7601c55.css",
+    "isEntry": true,
+    "src": "resources/sass/codebase/themes/flat.scss"
+  },
+  "resources/sass/codebase/themes/pulse.scss": {
+    "file": "assets/pulse-f11e728e.css",
+    "isEntry": true,
+    "src": "resources/sass/codebase/themes/pulse.scss"
+  },
+  "resources/sass/main.scss": {
+    "file": "assets/main-37ebd9ea.css",
+    "isEntry": true,
+    "src": "resources/sass/main.scss"
+  }
+}

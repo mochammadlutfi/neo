@@ -1,0 +1,380 @@
+<x-app-layout>
+    <div class="content">
+        <div class="content-heading d-flex justify-content-between align-items-center">
+            <div class="content-title">
+                Detail Pesanan
+            </div>
+            <div class="space-x">
+                <a href="{{ route('admin.order.edit', $data->id) }}" class="btn btn-sm btn-alt-primary me-2">
+                    <i class="fa fa-edit me-1"></i>
+                    Ubah
+                </a>
+                <button type="button" class="btn btn-sm btn-alt-danger" onclick="hapus()">
+                    <i class="fa fa-close me-1"></i>
+                    Hapus
+                </button>
+            </div>
+        </div>
+        <div class="block block-rounded">
+            <div class="block-content p-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <x-show-field label="Konsumen" value="{{ $data->user->nama }}"/>
+                        <x-show-field label="Tanggal pesan" value="{{ \Carbon\Carbon::parse($data->tgl)->translatedFormat('d F Y') }}"/>
+                        <x-show-field label="Harga per bulan" value="Rp {{ number_format($data->paket->harga,0,',','.') }}"/>
+                    </div>
+                    <div class="col-md-6">
+                        <x-show-field label="Paket" value="{{ $data->paket->nama }}"/>
+                        <x-show-field label="Durasi" value="{{ $data->durasi }} Bulan"/>
+                        <x-show-field label="Total" value="Rp {{ number_format($data->total,0,',','.') }}"/>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="block block-rounded overflow-hidden">
+            <div class="p-4 border-bottom border-2">
+                <ul class="nav nav-tabs nav-fill nav-pills" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="btabs-project-tab" data-bs-toggle="tab"
+                            data-bs-target="#btabs-project" role="tab" aria-controls="btabs-project"
+                            aria-selected="true">
+                            <i class="si fa-fw si-briefcase opacity-50 me-1"></i> Project
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="btabs-payment-tab" data-bs-toggle="tab"
+                            data-bs-target="#btabs-payment" role="tab"
+                            aria-controls="btabs-payment" aria-selected="false" tabindex="-1">
+                            <i class="si fa-fw si-wallet opacity-50 me-1"></i> Pembayaran
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <div class="block-content tab-content overflow-hidden">
+                <div class="tab-pane fade show active" id="btabs-project" role="tabpanel"
+                    aria-labelledby="btabs-project-tab" tabindex="0">
+                    <table class="table table-bordered w-100" id="tableProject">
+                        <thead>
+                            <tr>
+                                <th width="60px">No</th>
+                                <th width="200px">Nama</th>
+                                <th width="300px">Konsumen</th>
+                                <th width="200px">No Pesanan</th>
+                                <th width="200px">Total Tugas</th>
+                                <th width="60px">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="btabs-payment" role="tabpanel"
+                    aria-labelledby="btabs-payment-tab" tabindex="0">
+                    <table class="table table-bordered w-100 table-vcenter" id="tablePayment">
+                        <thead>
+                            <tr>
+                                <th width="60px">No</th>
+                                <th>Tanggal</th>
+                                <th>Jumlah</th>
+                                <th>Status</th>
+                                <th width="60px">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div
+            class="modal"
+            id="modal-normal"
+            tabindex="-1"
+            aria-labelledby="modal-normal"
+            style="display: none;"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form id="form-payment"  onsubmit="return false;" enctype="multipart/form-data">
+                        <div class="block block-rounded shadow-none mb-0">
+                            <div class="block-header block-header-default">
+                                <h3 class="block-title">Pembayaran</h3>
+                                <div class="block-options">
+                                    <button
+                                        type="button"
+                                        class="btn-block-option"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="block-content fs-sm">
+                                <input type="hidden" name="booking_id" value="{{ $data->id }}"/>
+                                <div class="mb-4">
+                                    <label for="field-tgl">Tanggal</label>
+                                    <input type="text" class="form-control" id="field-tgl" name="tgl" placeholder="Masukan Tanggal">
+                                    <div class="invalid-feedback" id="error-tgl">Invalid feedback</div>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="field-jumlah">Jumlah</label>
+                                    <input type="number" value="{{ $data->total_bayar - $data->bayar_sum_jumlah }}" class="form-control" id="field-jumlah" name="jumlah" placeholder="Masukan Jumlah">
+                                    <div class="invalid-feedback" id="error-jumlah">Invalid feedback</div>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label" for="field-bukti">Bukti Bayar</label>
+                                    <input class="form-control" type="file" name="bukti" id="field-bukti">
+                                    <div class="invalid-feedback" id="error-bukti">Invalid feedback</div>
+                                </div>
+                                <div
+                                    class="block-content block-content-full block-content-sm text-end border-top">
+                                    <button type="button" class="btn btn-alt-secondary" data-bs-dismiss="modal">
+                                        batal
+                                    </button>
+                                    <button type="submit" class="btn btn-alt-primary" id="btn-simpan">
+                                        Simpan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div
+            class="modal"
+            id="modal-show"
+            tabindex="-1"
+            aria-labelledby="modal-show"
+            style="display: none;"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <form id="form-payment"  onsubmit="return false;" enctype="multipart/form-data">
+                        <div class="block block-rounded shadow-none mb-0">
+                            <div class="block-header block-header-default">
+                                <h3 class="block-title">Detail Pembayaran</h3>
+                                <div class="block-options">
+                                    <button
+                                        type="button"
+                                        class="btn-block-option"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="detailPembayaran">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    @push('scripts')
+    <script>
+        $(function () {
+            var tablePayment = $('#tablePayment').DataTable({
+                processing: true,
+                serverSide: true,
+                dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'r" +
+                        "ow'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+                ajax: {
+                    url : "{{ route('admin.payment.index') }}",
+                    data : function(data){
+                        data.oder_id = "{{ $data->id }}";
+                    },
+                },
+                columns: [
+                    {
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex'
+                    }, {
+                        data: 'tgl',
+                        name: 'tgl'
+                    }, {
+                        data: 'jumlah',
+                        name: 'jumlah'
+                    }, {
+                        data: 'status',
+                        name: 'status'
+                    }, {
+                        data: 'action',
+                        name: 'action',
+                        orderable: true,
+                        searchable: true
+                    }
+                ]
+            });
+
+            var tablePayment = $('#tableProject').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    dom : "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+                    ajax: {
+                        url :"{{ route('admin.project.index') }}",
+                        data : function(data){
+                            data.order_id = "{{ $data->id }}";
+                        },
+                    },
+                    columns: [
+                        {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                        {data: 'nama', name: 'nama'},
+                        {data: 'user.nama', name: 'user.nama'},
+                        {data: 'order.nomor', name: 'order.nomor'},
+                        {data: 'task_count', name: 'task_count'},
+                        {
+                            data: 'action', 
+                            name: 'action', 
+                            orderable: true, 
+                            searchable: true
+                        },
+                    ]
+                });
+        });
+
+        $("#field-tgl").flatpickr({
+            altInput: true,
+            altFormat: "j F Y",
+            dateFormat: "Y-m-d",
+            locale : "id",
+            defaultDate : new Date(),
+            minDate: "today"
+        });
+
+        function modalShow(id){
+            $.ajax({
+                url: "/admin/pembayaran/"+id,
+                type: "GET",
+                dataType: "html",
+                success: function (response) {
+                    var el = document.getElementById('modal-show');
+                    $("#detailPembayaran").html(response);
+                    var myModal = bootstrap.Modal.getOrCreateInstance(el);
+                    myModal.show();
+                },
+                error: function (error) {
+                }
+
+            });
+        }
+
+        function updateStatus(id, status){
+                // console.log(status);
+                $.ajax({
+                    url: "/admin/pembayaran/"+id +"/status",
+                    type: "POST",
+                    data : {
+                        status : status,
+                        _token : $("meta[name='csrf-token']").attr("content"),
+                    },
+                    success: function (response) {
+                        // console.log(response);
+                        location.reload();
+                        var el = document.getElementById('modal-show');
+                        $('.datatable').DataTable().ajax.reload();
+                        // $("#detailPembayaran").html(response);
+                        var myModal = bootstrap.Modal.getOrCreateInstance(el);
+                        myModal.hide();
+                    },
+                    error: function (error) {
+                    }
+                });
+            }
+            
+
+            function hapus(){
+                Swal.fire({
+                    icon : 'warning',
+                    text: 'Hapus Data?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: `Tidak, Jangan!`,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ route('admin.order.delete', $data->id )}}",
+                            type: "DELETE",
+                            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                            success: function(data) {
+                                if(data.fail == false){
+                                    Swal.fire({
+                                        toast : true,
+                                        title: "Berhasil",
+                                        text: "Data Berhasil Dihapus!",
+                                        timer: 1500,
+                                        showConfirmButton: false,
+                                        icon: 'success',
+                                        position : 'top-end'
+                                    }).then((result) => {
+                                        // $('#tableTask').DataTable().ajax.reload();
+                                        window.location = "{{ route('admin.order.index') }}";
+                                    });
+                                }else{
+                                    Swal.fire({
+                                        toast : true,
+                                        title: "Gagal",
+                                        text: "Data Gagal Dihapus!",
+                                        timer: 1500,
+                                        showConfirmButton: false,
+                                        icon: 'error',
+                                        position : 'top-end'
+                                    });
+                                }
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                    Swal.fire({
+                                        toast : true,
+                                        title: "Gagal",
+                                        text: "Terjadi Kesalahan Di Server!",
+                                        timer: 1500,
+                                        showConfirmButton: false,
+                                        icon: 'error',
+                                        position : 'top-end'
+                                    });
+                            }
+                        });
+                    }
+                })
+            }
+        $("#form-payment").on("submit",function (e) {
+            e.preventDefault();
+            var fomr = $('form#form-payment')[0];
+            var formData = new FormData(fomr);
+            let token   = $("meta[name='csrf-token']").attr("content");
+            formData.append('_token', token);
+
+            $.ajax({
+                url: "{{ route('admin.payment.store') }}",
+                type: "POST",
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response.fail == false) {
+                        $('.datatable').DataTable().ajax.reload();
+                        var myModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modal-normal'));
+                        myModal.hide();
+                    } else {
+                        for (control in response.errors) {
+                            $('#field-' + control).addClass('is-invalid');
+                            $('#error-' + control).html(response.errors[control]);
+                        }
+                    }
+                },
+                error: function (error) {
+                }
+
+            });
+
+        });
+    </script>
+    @endpush
+
+</x-app-layout>
+
