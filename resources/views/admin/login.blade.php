@@ -38,7 +38,18 @@
                                         <form method="POST" action="{{ route('admin.login') }}">
                                             @csrf
                                             <x-input-field type="text" name="username" id="username" label="Username"/>                                            
-                                            <x-input-field type="password" name="password" id="password" label="Password"/>
+                                            <div class="mb-4">
+                                                <label class="form-label" for="password">Password</label>
+                                                <div class="input-group">
+                                                    <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Masukkan Password">
+                                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                                        <i class="fa fa-eye" id="eyeIcon"></i>
+                                                    </button>
+                                                </div>
+                                                @error('password')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
                                             <div class="mb-4">
                                             <button type="submit" class="btn btn-lg btn-gd-main fw-medium w-100">
                                                 Login Sekarang
@@ -56,5 +67,26 @@
             <!-- END Main Container -->
         </div>
         <!-- END Page Container -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const togglePassword = document.getElementById('togglePassword');
+                const passwordField = document.getElementById('password');
+                const eyeIcon = document.getElementById('eyeIcon');
+
+                togglePassword.addEventListener('click', function() {
+                    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordField.setAttribute('type', type);
+                    
+                    // Toggle eye icon
+                    if (type === 'password') {
+                        eyeIcon.classList.remove('fa-eye-slash');
+                        eyeIcon.classList.add('fa-eye');
+                    } else {
+                        eyeIcon.classList.remove('fa-eye');
+                        eyeIcon.classList.add('fa-eye-slash');
+                    }
+                });
+            });
+        </script>
     </body>
 </html>

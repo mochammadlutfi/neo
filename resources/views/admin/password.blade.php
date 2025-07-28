@@ -18,9 +18,44 @@
                     @csrf
                     <div class="row">
                         <div class="col-md-6">
-                            <x-input-field type="password" id="old_password" name="old_password" label="Password Lama" :required="true"/>
-                            <x-input-field type="password" id="password" name="password" label="Password Baru" :required="true"/>
-                            <x-input-field type="password" id="password_confirmation" name="password_confirmation" label="Konfirmasi Password Baru" :required="true"/>
+                            <div class="mb-4">
+                                <label class="form-label" for="field-old_password">Password Lama <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control @error('old_password') is-invalid @enderror" id="field-old_password" name="old_password" placeholder="Masukkan Password Lama">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('field-old_password', this)">
+                                        <i class="fa fa-eye"></i>
+                                    </button>
+                                </div>
+                                @error('old_password')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label" for="field-password">Password Baru <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control @error('password') is-invalid @enderror" id="field-password" name="password" placeholder="Masukkan Password Baru">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('field-password', this)">
+                                        <i class="fa fa-eye"></i>
+                                    </button>
+                                </div>
+                                @error('password')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label" for="field-password_confirmation">Konfirmasi Password Baru <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror" id="field-password_confirmation" name="password_confirmation" placeholder="Konfirmasi Password Baru">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('field-password_confirmation', this)">
+                                        <i class="fa fa-eye"></i>
+                                    </button>
+                                </div>
+                                @error('password_confirmation')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
                         <div class="col-md-6">
                         </div>
@@ -35,6 +70,22 @@
     </div>
 
     @push('scripts')
+    <script>
+        function togglePasswordVisibility(fieldId, button) {
+            const passwordField = document.getElementById(fieldId);
+            const icon = button.querySelector('i');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
     @endpush
 </x-app-layout>
 
