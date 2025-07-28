@@ -8,9 +8,15 @@
                     Detail Pesanan: {{ $data->nomor }}
                 </h3>
                 <div class="block-options">
-                    <a href="{{ route('admin.order.index') }}" class="btn btn-sm btn-secondary fs-base me-2">
-                        <i class="fa fa-arrow-left me-1"></i>
-                        Kembali
+                    @if($data->status_pembayaran != 'Lunas')
+                    <button type="button" class="btn btn-sm btn-info fs-base me-2" onclick="kirimTagihan()">
+                        <i class="fa fa-paper-plane me-1"></i>
+                        Kirim Tagihan
+                    </button>
+                    @endif
+                    <a href="{{ route('admin.order.invoice', $data->id) }}" class="btn btn-sm btn-primary fs-base me-2" target="_blank">
+                        <i class="fa fa-print me-1"></i>
+                        Download PDF
                     </a>
                     <a href="{{ route('admin.order.edit', $data->id) }}" class="btn btn-sm btn-warning fs-base me-2">
                         <i class="fa fa-edit me-1"></i>
@@ -294,6 +300,58 @@
                 });
             }
             
+
+            function kirimTagihan(){
+                Swal.fire({
+                    icon : 'question',
+                    text: 'Kirim tagihan sisa pembayaran ke customer?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Kirim!',
+                    cancelButtonText: `Batal`,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "/admin/order/{{ $data->id }}/send-invoice",
+                            type: "POST",
+                            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                            success: function(data) {
+                                if(data.fail == false){
+                                    Swal.fire({
+                                        toast : true,
+                                        title: "Berhasil",
+                                        text: "Tagihan berhasil dikirim!",
+                                        timer: 1500,
+                                        showConfirmButton: false,
+                                        icon: 'success',
+                                        position : 'top-end'
+                                    });
+                                }else{
+                                    Swal.fire({
+                                        toast : true,
+                                        title: "Gagal",
+                                        text: "Gagal mengirim tagihan!",
+                                        timer: 1500,
+                                        showConfirmButton: false,
+                                        icon: 'error',
+                                        position : 'top-end'
+                                    });
+                                }
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                Swal.fire({
+                                    toast : true,
+                                    title: "Gagal",
+                                    text: "Terjadi Kesalahan Di Server!",
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                    icon: 'error',
+                                    position : 'top-end'
+                                });
+                            }
+                        });
+                    }
+                })
+            }
 
             function hapus(){
                 Swal.fire({

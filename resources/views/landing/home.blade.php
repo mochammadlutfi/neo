@@ -11,7 +11,7 @@
                             Social Profil Management
                         </h1>
                         <p class="text-muted fw-medium mb-4">
-                            Tingkatkan penjualan bisnis Anda menggunakan Jasa Pengelolaan Media Sosial. Ada tidak perlu repot, Team Kalaman Multimedia Karya akan melakukannya untuk Anda.</a>.
+                            Tingkatkan penjualan bisnis Anda menggunakan Jasa Pengelolaan Media Sosial. Ada tidak perlu repot, Team NEO Agency Advertising akan melakukannya untuk Anda.</a>.
                         </p>
                         <a class="btn btn-gd-main py-3 px-4" href="#harga">
                             <i class="fa fa-arrow-right opacity-50 me-1"></i> Pesan Sekarang

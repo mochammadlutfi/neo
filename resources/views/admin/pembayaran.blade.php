@@ -52,6 +52,7 @@
                                 </div>
                             </div>
                             <div class="block-content fs-sm">
+                                <input type="hidden" name="id" id="field-id">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-4">
@@ -64,11 +65,15 @@
                                         <x-input-field type="text" id="tgl" name="tgl" label="Tanggal" :required="true" isAjax/>
                                     </div>
                                     <div class="col-md-6">
-                                        <x-input-field type="text" id="jumlah" name="jumlah" label="Jumlah" :required="true" isAjax/>
+                                        <x-input-field type="number" id="jumlah" name="jumlah" label="Jumlah" :required="true" isAjax/>
                                         <div class="mb-4">
                                             <label class="form-label" for="field-bukti">Bukti Bayar</label>
                                             <input class="form-control" type="file" name="bukti" id="field-bukti">
                                             <div class="invalid-feedback" id="error-bukti">Invalid feedback</div>
+                                            <div id="current-bukti" class="mt-2" style="display: none;">
+                                                <small class="text-muted">File saat ini:</small>
+                                                <img id="preview-bukti" src="" alt="Current Bukti" class="img-thumbnail" style="max-width: 200px;">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -241,12 +246,27 @@
                     processData: false,
                     success: function (response) {
                         if (response.fail == false) {
-                            $('#datatable').DataTable().ajax.reload();
+                            $('#dataTable').DataTable().ajax.reload();
                             const el = document.getElementById('modal-form');
                             var myModal = bootstrap.Modal.getOrCreateInstance(el);
                             myModal.hide();
-                            fomr.reset();
+                            resetForm();
+                            
+                            Swal.fire({
+                                toast: true,
+                                title: "Berhasil",
+                                text: "Data berhasil disimpan!",
+                                timer: 1500,
+                                showConfirmButton: false,
+                                icon: 'success',
+                                position: 'top-end'
+                            });
                         } else {
+                            // Clear previous errors
+                            $('.form-control').removeClass('is-invalid');
+                            $('.invalid-feedback').html('');
+                            
+                            // Show new errors
                             for (control in response.errors) {
                                 $('#field-' + control).addClass('is-invalid');
                                 $('#error-' + control).html(response.errors[control]);
@@ -260,9 +280,74 @@
 
             });
 
+            function resetForm() {
+                $('#formData')[0].reset();
+                $('#field-id').val('');
+                $('#field-order_id').val(null).trigger('change');
+                $('#current-bukti').hide();
+                $('.form-control').removeClass('is-invalid');
+                $('.invalid-feedback').html('');
+                $('#modalFormTitle').text('Tambah Pembayaran');
+            }
+
             function addPayment(){
+                resetForm();
                 var modalForm = bootstrap.Modal.getOrCreateInstance(document.getElementById('modal-form'));
                 modalForm.show();
+            }
+
+            function editPayment(id){
+                $.ajax({
+                    url: "/admin/pembayaran/" + id + "/edit",
+                    type: "GET",
+                    success: function (response) {
+                        if (response.fail == false) {
+                            // Reset form first
+                            resetForm();
+                            
+                            // Fill form with data
+                            $('#field-id').val(response.data.id);
+                            $('#field-jumlah').val(response.data.jumlah);
+                            $('#field-tgl').val(response.data.tgl);
+                            
+                            // Set order selection
+                            var option = new Option(response.data.order_nomor, response.data.order_id, true, true);
+                            $('#field-order_id').append(option).trigger('change');
+                            
+                            // Show current bukti if exists
+                            if (response.data.bukti) {
+                                $('#preview-bukti').attr('src', response.data.bukti);
+                                $('#current-bukti').show();
+                            }
+                            
+                            $('#modalFormTitle').text('Edit Pembayaran');
+                            
+                            var modalForm = bootstrap.Modal.getOrCreateInstance(document.getElementById('modal-form'));
+                            modalForm.show();
+                        } else {
+                            Swal.fire({
+                                toast: true,
+                                title: "Gagal",
+                                text: response.message || "Gagal mengambil data!",
+                                timer: 1500,
+                                showConfirmButton: false,
+                                icon: 'error',
+                                position: 'top-end'
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        Swal.fire({
+                            toast: true,
+                            title: "Gagal",
+                            text: "Terjadi kesalahan di server!",
+                            timer: 1500,
+                            showConfirmButton: false,
+                            icon: 'error',
+                            position: 'top-end'
+                        });
+                    }
+                });
             }
 
             function modalShow(id){
@@ -293,13 +378,22 @@
                         _token : $("meta[name='csrf-token']").attr("content"),
                     },
                     success: function (response) {
-                        // console.log(response);
-                        location.reload();
-                        var el = document.getElementById('modal-show');
-                        $('.datatable').DataTable().ajax.reload();
-                        // $("#detailPembayaran").html(response);
-                        var myModal = bootstrap.Modal.getOrCreateInstance(el);
-                        myModal.hide();
+                        if (response.fail == false) {
+                            $('#dataTable').DataTable().ajax.reload();
+                            var el = document.getElementById('modal-show');
+                            var myModal = bootstrap.Modal.getOrCreateInstance(el);
+                            myModal.hide();
+                            
+                            Swal.fire({
+                                toast: true,
+                                title: "Berhasil",
+                                text: "Status berhasil diupdate!",
+                                timer: 1500,
+                                showConfirmButton: false,
+                                icon: 'success',
+                                position: 'top-end'
+                            });
+                        }
                     },
                     error: function (error) {
                     }
@@ -330,7 +424,7 @@
                                         icon: 'success',
                                         position : 'top-end'
                                     }).then((result) => {
-                                        window.location.replace("{{ route('admin.payment.index') }}");
+                                        $('#dataTable').DataTable().ajax.reload();
                                     });
                                 }else{
                                     Swal.fire({

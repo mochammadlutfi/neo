@@ -172,7 +172,7 @@
     <div class="invoice-header">
         <div class="company-info">
             <img src="/images/logo.jpg" width="80pt"/>
-            <div class="company-name">Neo Agency & Advertising</div>
+            <div class="company-name">NEO Agency Advertising</div>
             <div>Social Media Management Services</div>
             <div>Indonesia</div>
         </div>
@@ -294,7 +294,7 @@
 
     <div class="footer">
         <p><strong>Terima kasih atas kepercayaan Anda!</strong></p>
-        <p>Neo Agency & Advertising - Social Media Management Services</p>
+        <p>NEO Agency Advertising - Social Media Management Services</p>
         <p>Invoice ini dibuat secara otomatis pada {{ \Carbon\Carbon::now()->translatedFormat('d F Y H:i') }}</p>
     </div>
 </body>

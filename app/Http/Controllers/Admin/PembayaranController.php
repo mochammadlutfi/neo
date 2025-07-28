@@ -35,7 +35,26 @@ class PembayaranController extends Controller
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
-                    $btn = '<button type="button" class="btn btn-primary btn-sm" onclick="modalShow('. $row->id .')">Detail</a>';
+                    $btn = '<div class="btn-group" role="group">';
+                    $btn .= '<button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">';
+                    $btn .= '<i class="fa fa-cog me-1"></i>Aksi';
+                    $btn .= '</button>';
+                    $btn .= '<ul class="dropdown-menu">';
+                    $btn .= '<li><a class="dropdown-item" href="javascript:void(0)" onclick="modalShow('. $row->id .')"><i class="fa fa-eye me-2"></i>Detail</a></li>';
+                    
+                    // Hanya tampilkan Edit dan Hapus jika status bukan 'terima'
+                    if ($row->status !== 'terima') {
+                        $btn .= '<li><a class="dropdown-item" href="javascript:void(0)" onclick="editPayment('. $row->id .')"><i class="fa fa-edit me-2"></i>Edit</a></li>';
+                        $btn .= '<li><hr class="dropdown-divider"></li>';
+                        $btn .= '<li><a class="dropdown-item text-danger" href="javascript:void(0)" onclick="hapus('. $row->id .')"><i class="fa fa-trash me-2"></i>Hapus</a></li>';
+                    } else {
+                        $btn .= '<li><hr class="dropdown-divider"></li>';
+                        $btn .= '<li><span class="dropdown-item-text text-muted"><i class="fa fa-lock me-2"></i>Pembayaran sudah diterima</span></li>';
+                    }
+                    
+                    $btn .= '</ul>';
+                    $btn .= '</div>';
+                    
                     return $btn; 
                 })
                 ->editColumn('tgl', function ($row) {
@@ -109,7 +128,7 @@ class PembayaranController extends Controller
                 if($request->bukti){
                     $fileName = time() . '.' . $request->bukti->extension();
                     Storage::disk('public')->putFileAs('uploads/pembayaran', $request->bukti, $fileName);
-                    $data->bukti = '/uploads/pembayaran/'.$fileName;
+                    $data->bukti = '/storage/uploads/pembayaran/'.$fileName;
                 }
                 $data->save();
 
@@ -237,11 +256,34 @@ class PembayaranController extends Controller
      */
     public function edit($id)
     {
-        $data = Ekskul::where('id', $id)->first();
-        $pembina = User::where('level', 'pembina')->orderBy('nama', 'ASC')->get();
-        return view('ekskul.edit',[
-            'pembina' => $pembina,
-            'data' => $data
+        $data = Pembayaran::with(['order'])->where('id', $id)->first();
+        
+        if (!$data) {
+            return response()->json([
+                'fail' => true,
+                'message' => 'Data tidak ditemukan'
+            ]);
+        }
+        
+        // Check apakah pembayaran sudah diterima
+        if ($data->status === 'terima') {
+            return response()->json([
+                'fail' => true,
+                'message' => 'Pembayaran yang sudah diterima tidak dapat diubah'
+            ]);
+        }
+        
+        return response()->json([
+            'fail' => false,
+            'data' => [
+                'id' => $data->id,
+                'order_id' => $data->order_id,
+                'order_nomor' => $data->order->nomor,
+                'tgl' => $data->tgl->format('Y-m-d'),
+                'jumlah' => $data->jumlah,
+                'bukti' => $data->bukti,
+                'status' => $data->status
+            ]
         ]);
     }
 
@@ -254,64 +296,81 @@ class PembayaranController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($request->all());
+        // Check apakah pembayaran sudah diterima
+        $pembayaran = Pembayaran::find($id);
+        if (!$pembayaran) {
+            return response()->json([
+                'fail' => true,
+                'message' => 'Data tidak ditemukan'
+            ]);
+        }
+        
+        if ($pembayaran->status === 'terima') {
+            return response()->json([
+                'fail' => true,
+                'message' => 'Pembayaran yang sudah diterima tidak dapat diubah'
+            ]);
+        }
+        
         $rules = [
-            'nama' => 'required',
-            'pembina_id' => 'required',
-            'deskripsi' => 'required',
-            'tempat' => 'required',
-            'jadwal' => 'required',
-            'mulai' => 'required',
-            'selesai' => 'required',
+            'order_id' => 'required',
+            'tgl' => 'required',
+            'jumlah' => 'required|numeric|min:1',
         ];
 
         $pesan = [
-            'nama.required' => 'Nama Wajib Diisi!',
-            'pembina_id.required' => 'Pembina Wajib Diisi!',
-            'deskripsi.required' => 'Deskripsi Wajib Diisi!',
-            'tempat.required' => 'Tempat Wajib Diisi!',
-            'mulai.required' => 'Jam Mulai Wajib Diisi!',
-            'selesai.required' => 'Jam Selesai Wajib Diisi!',
+            'order_id.required' => 'Pesanan Wajib Diisi!',
+            'tgl.required' => 'Tanggal Bayar Wajib Diisi!',
+            'jumlah.required' => 'Jumlah Wajib Diisi!',
+            'jumlah.numeric' => 'Jumlah harus berupa angka!',
+            'jumlah.min' => 'Jumlah minimal 1!',
         ];
-
 
         $validator = Validator::make($request->all(), $rules, $pesan);
         if ($validator->fails()){
-            return back()->withInput()->withErrors($validator->errors());
+            return response()->json([
+                'fail' => true,
+                'errors' => $validator->errors()
+            ]);
         }else{
             DB::beginTransaction();
             try{
-
-                $data = Ekskul::where('id', $id)->first();
-                $data->nama = $request->nama;
-                $data->pembina_id = $request->pembina_id;
-                $data->deskripsi = $request->deskripsi;
-                $data->tempat = $request->tempat;
-                $data->jadwal = json_encode($request->jadwal);
-                $data->mulai = $request->mulai;
-                $data->selesai = $request->selesai;
-                $data->status = $request->status;
-                if($request->foto){
-                    if(!empty($data->foto)){
-                        $cek = Storage::disk('public')->exists($data->foto);
-                        if($cek)
-                        {
-                            Storage::disk('public')->delete($data->foto);
+                $data = $pembayaran;
+                
+                $data->order_id = $request->order_id;
+                $data->tgl = Carbon::parse($request->tgl);
+                $data->jumlah = $request->jumlah;
+                
+                // Handle file upload jika ada bukti baru
+                if($request->hasFile('bukti')){
+                    // Delete old file if exists
+                    if(!empty($data->bukti)){
+                        $oldFile = str_replace('/storage', '', $data->bukti);
+                        if(Storage::disk('public')->exists($oldFile)){
+                            Storage::disk('public')->delete($oldFile);
                         }
                     }
-                    $fileName = time() . '.' . $request->foto->extension();
-                    Storage::disk('public')->putFileAs('uploads/ekskul', $request->foto, $fileName);
-                    $data->foto = '/uploads/ekskul/'.$fileName;
+                    
+                    $fileName = time() . '.' . $request->bukti->extension();
+                    Storage::disk('public')->putFileAs('uploads/pembayaran', $request->bukti, $fileName);
+                    $data->bukti = '/storage/uploads/pembayaran/'.$fileName;
                 }
+                
                 $data->save();
 
             }catch(\QueryException $e){
                 DB::rollback();
-                back()->withInput()->withErrors($validator->errors());
+                return response()->json([
+                    'fail' => true,
+                    'message' => 'Gagal update data: ' . $e->getMessage()
+                ]);
             }
 
             DB::commit();
-            return redirect()->route('ekskul.index');
+            return response()->json([
+                'fail' => false,
+                'message' => 'Data berhasil diupdate'
+            ]);
         }
     }
 
@@ -323,10 +382,33 @@ class PembayaranController extends Controller
      */
     public function destroy($id)
     {
+        $data = Pembayaran::find($id);
+        
+        if (!$data) {
+            return response()->json([
+                'fail' => true,
+                'pesan' => 'Data tidak ditemukan!',
+            ]);
+        }
+        
+        // Check apakah pembayaran sudah diterima
+        if ($data->status === 'terima') {
+            return response()->json([
+                'fail' => true,
+                'pesan' => 'Pembayaran yang sudah diterima tidak dapat dihapus!',
+            ]);
+        }
+        
         DB::beginTransaction();
         try{
-
-            $data = Pembayaran::where('id', $id)->first();
+            // Delete file bukti jika ada
+            if(!empty($data->bukti)){
+                $oldFile = str_replace('/storage', '', $data->bukti);
+                if(Storage::disk('public')->exists($oldFile)){
+                    Storage::disk('public')->delete($oldFile);
+                }
+            }
+            
             $data->delete();
 
         }catch(\QueryException $e){
@@ -345,65 +427,6 @@ class PembayaranController extends Controller
         ]);
     }
 
-    public function anggota($id, Request $request)
-    {
-        if ($request->ajax()) {
-
-            $data = DB::table("anggota_eskul as a")
-            ->select('a.*', 'b.nis', 'b.nama', 'b.kelas', 'b.hp', 'b.email', 'b.jk', 'b.alamat', 'c.nama as ekskul')
-            ->join("anggota as b", "b.id", "=", "a.anggota_id")
-            ->join("ekskul as c", "c.id", "=", "a.ekskul_id")
-            ->where('a.ekskul_id', $id)
-            ->get();
-
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('action', function($row){
-                    $actionBtn = '<a href="'.route('anggota.show', $row->id).'" class="edit btn btn-primary btn-sm">Detail</a>';
-                    return $actionBtn;
-                })
-                ->editColumn('created_at', function ($row) {
-                    return Carbon::parse($row->created_at)->translatedFormat('d F Y');
-                })
-                ->editColumn('status', function ($row) {
-                    if($row->status == 'draft'){
-                        return '<span class="badge bg-warning">Menunggu Konfirmasi</span>';
-                    }else if($row->status == 'aktif'){
-                        return '<span class="badge bg-success">Aktif</span>';
-                    }else if($row->status == 'tolak'){
-                        return '<span class="badge bg-success">Ditolak</span>';
-                    }else{
-                        return '<span class="badge bg-secondary">Keluar</span>';
-                    }
-                })
-                ->rawColumns(['action', 'status']) 
-                ->make(true);
-        }
-    }
-
-    
-    public function cek(Request $request)
-    {
-        dd($request->all());
-    }
-
-    
-    private function getNumber()
-    {
-        $q = Booking::select(DB::raw('MAX(RIGHT(nomor,5)) AS kd_max'));
-
-        $code = 'BKN/';
-        $no = 1;
-        date_default_timezone_set('Asia/Jakarta');
-
-        if($q->count() > 0){
-            foreach($q->get() as $k){
-                return $code . date('ym') .'/'.sprintf("%05s", abs(((int)$k->kd_max) + 1));
-            }
-        }else{
-            return $code . date('ym') .'/'. sprintf("%05s", $no);
-        }
-    }
     
     public function report(Request $request)
     {

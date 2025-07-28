@@ -13,7 +13,7 @@
                     <img src="/images/logo.png" width="80pt"/>
                 </td>
                 <td class="text-center">
-                    <h1 class="text-center" style="font-size:30pt; font-weight: bold;">NEO Agency & Advertising</h1>
+                    <h1 class="text-center" style="font-size:30pt; font-weight: bold;">NEO Agency Advertising</h1>
                     <h2 class="h3 text-center" style="font-weight: bold; margin-top:0px">LAPORAN PEMBAYARAN</h2>
                     <h2 class="h4 text-center" style="font-weight: bold; margin-top:0px">
                         Periode : {{ \Carbon\Carbon::parse($tgl[0])->translatedFormat('d F Y') }} - {{ \Carbon\Carbon::parse($tgl[1])->translatedFormat('d F Y') }}

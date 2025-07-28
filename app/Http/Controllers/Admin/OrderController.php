@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use Storage;
 use Carbon\Carbon;
 use App\Models\Order;
+use App\Mail\InvoiceReminder;
+use Illuminate\Support\Facades\Mail;
 use PDF;
 
 class OrderController extends Controller
@@ -295,18 +297,25 @@ class OrderController extends Controller
     {
             $cari = $request->searchTerm;
             $user_id = $request->user_id;
-            $fetchData = Order::
-            when(isset($cari), function($q) use($cari){
+            
+            $fetchData = Order::with(['user', 'payment' => function($q) {
+                $q->where('status', 'terima');
+            }])
+            ->when(isset($cari), function($q) use($cari){
                 return $q->where('nomor','LIKE',  '%' . $cari .'%');
             })->when(isset($user_id), function($q) use($user_id){
                 return $q->where('user_id', $user_id);
             })
-            ->orderBy('created_at', 'DESC')->get();
-        //   }
+            ->orderBy('created_at', 'DESC')
+            ->get();
 
           $data = array();
           foreach($fetchData as $row) {
-            $data[] = array("id" =>$row->id, "text"=> $row->nomor);
+            // Hanya tampilkan pesanan yang belum lunas
+            if ($row->status_pembayaran !== 'Lunas') {
+                $text = $row->nomor . ' - ' . $row->user->nama . ' (Status: ' . $row->status_pembayaran . ')';
+                $data[] = array("id" =>$row->id, "text"=> $text);
+            }
           }
 
           return response()->json($data);
@@ -329,6 +338,60 @@ class OrderController extends Controller
         }
 
           return response()->json($data);
+    }
+
+    public function sendInvoice($id)
+    {
+        try {
+            $order = Order::with(['paket', 'user', 'payment'])->find($id);
+            
+            if (!$order) {
+                return response()->json([
+                    'fail' => true,
+                    'message' => 'Order tidak ditemukan'
+                ]);
+            }
+
+            if ($order->status_pembayaran == 'Lunas') {
+                return response()->json([
+                    'fail' => true,
+                    'message' => 'Pembayaran sudah lunas'
+                ]);
+            }
+
+            // Send email reminder to customer
+            Mail::to($order->user->email)->send(new InvoiceReminder($order));
+
+            return response()->json([
+                'fail' => false,
+                'message' => 'Tagihan berhasil dikirim ke ' . $order->user->email
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'fail' => true,
+                'message' => 'Gagal mengirim tagihan: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function invoice($id)
+    {
+        $order = Order::with(['paket', 'user', 'payment'])->find($id);
+        
+        if (!$order) {
+            abort(404, 'Order not found');
+        }
+
+        $config = [
+            'format' => 'A4'
+        ];
+        
+        $pdf = PDF::loadView('reports.invoice', [
+            'order' => $order
+        ], [], $config);
+
+        return $pdf->stream('Invoice-' . $order->nomor . '.pdf');
     }
 
     public function report(Request $request)

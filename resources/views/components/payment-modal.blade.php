@@ -96,7 +96,7 @@
                                 {{-- <div class="col-md-6">
                                     <div class="fs-base"><strong>Bank Mandiri</strong></div>
                                     <div class="fs-base font-monospace">0987654321</div>
-                                    <div class="fs-base">a.n. Kalaman Multimedia Karya</div>
+                                    <div class="fs-base">a.n. NEO Agency Advertising</div>
                                 </div> --}}
                             </div>
                         </div>
@@ -194,7 +194,7 @@
                 'Min: Rp ' + minPayment.toLocaleString('id-ID') + ' | Max: Rp ' + remaining.toLocaleString('id-ID');
 
             // Set form action
-            document.getElementById(`form-payment-${this.modalId}`).action = `/user/pesanan/${orderId}`;
+            document.getElementById(`form-payment-${this.modalId}`).action = `/user/pesanan/${orderId}/update`;
 
             // Set input constraints
             const jumlahInput = document.getElementById(`${this.modalId}-field-jumlah`);
@@ -247,6 +247,7 @@
                     }
                 },
                 error: (xhr) => {
+                    console.log('Error Payment : ',xhr);
                     if (xhr.status === 422) {
                         const errors = xhr.responseJSON.errors;
                         this.displayValidationErrors(errors);

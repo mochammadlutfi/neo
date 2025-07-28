@@ -21,7 +21,7 @@
                     <img src="/images/logo.jpg" width="80pt"/>
                 </td>
                 <td class="text-center">
-                    <h1 class="text-center" style="font-size:30pt; font-weight: bold;">NEO Agency & Advertising</h1>
+                    <h1 class="text-center" style="font-size:30pt; font-weight: bold;">NEO Agency Advertising</h1>
                     <h2 class="h3 text-center" style="font-weight: bold; margin-top:0px">Customer Journey</h2>
                 </td>
             </tr>

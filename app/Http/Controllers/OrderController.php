@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DB;
 use DataTables;
+use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\Order;
 use App\Models\Paket;
@@ -98,13 +99,61 @@ class OrderController extends Controller
         return redirect()->route('user.order.payment', $data->id);
     }
 
-    public function payment($id)
+    public function payment($id, Request $request)
     {
-        $data = Order::where('id', $id)->first();
+        $order = Order::where('id', $id)->first();
+        
+        $rules = [
+            'tgl' => 'required',
+            'jumlah' => 'required',
+            'bukti' => 'required',
+        ];
 
-        return view('landing.order.payment',[
-            'data' => $data
-        ]);
+        $pesan = [
+            'tgl.required' => 'Tanggal Bayar Wajib Diisi!',
+            'jumlah.required' => 'Jumlah Wajib Diisi!',
+            // 'jumlah.max' => 'Jumlah Pembayaran Maksimal Rp '.number_format($max,0,',','.'),s
+            'bukti.required' => 'Bukti Pembayaran Wajib Diisi!',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $pesan);
+        if ($validator->fails()){
+            return response()->json([
+                'fail' => true,
+                'errors' => $validator->errors()
+            ]);
+        }else{
+            DB::beginTransaction();
+            try{
+                $data = new Pembayaran();
+                $data->order_id = $id;
+                $data->tgl = Carbon::parse($request->tgl);
+                $data->jumlah = $request->jumlah;
+                $data->status = 'pending';
+
+                if($request->bukti){
+                    $fileName = time() . '.' . $request->bukti->extension();
+                    Storage::disk('public')->putFileAs('uploads/pembayaran', $request->bukti, $fileName);
+                    $data->bukti = '/uploads/pembayaran/'.$fileName;
+                }
+                $data->save();
+
+                $booking->status = 'pending';
+                $booking->save();
+
+            }catch(\QueryException $e){
+                DB::rollback();
+                return response()->json([
+                    'fail' => true,
+                    'pesan' => $e,
+                ]);
+            }
+
+            DB::commit();
+            return response()->json([
+                'fail' => false,
+            ]);
+        }
     }
 
     public function invoice($id)
