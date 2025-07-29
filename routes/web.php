@@ -50,7 +50,7 @@ Route::middleware('auth')->name('user.')->prefix('/user')->group(function () {
         Route::get('/{id}','OrderController@show')->name('show');
         Route::get('/{id}/invoice','OrderController@invoice')->name('invoice');
         Route::post('/{id}/update','OrderController@update')->name('update');  
-        Route::post('/{id}/pembayaran','OrderController@payment')->name('payment');
+        Route::get('/{id}/pembayaran','OrderController@payment')->name('payment');
         Route::get('/{id}/pembayaran/data','OrderController@paymentData')->name('payment.data');
         Route::get('/{id}/project','ProjectController@index')->name('user.project');
         Route::get('/{id}/project/{project}','ProjectController@show')->name('user.project.show');

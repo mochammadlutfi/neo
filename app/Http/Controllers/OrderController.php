@@ -101,59 +101,12 @@ class OrderController extends Controller
 
     public function payment($id, Request $request)
     {
-        $order = Order::where('id', $id)->first();
+
+        $data = Order::where('id', $id)->first();
         
-        $rules = [
-            'tgl' => 'required',
-            'jumlah' => 'required',
-            'bukti' => 'required',
-        ];
-
-        $pesan = [
-            'tgl.required' => 'Tanggal Bayar Wajib Diisi!',
-            'jumlah.required' => 'Jumlah Wajib Diisi!',
-            // 'jumlah.max' => 'Jumlah Pembayaran Maksimal Rp '.number_format($max,0,',','.'),s
-            'bukti.required' => 'Bukti Pembayaran Wajib Diisi!',
-        ];
-
-        $validator = Validator::make($request->all(), $rules, $pesan);
-        if ($validator->fails()){
-            return response()->json([
-                'fail' => true,
-                'errors' => $validator->errors()
-            ]);
-        }else{
-            DB::beginTransaction();
-            try{
-                $data = new Pembayaran();
-                $data->order_id = $id;
-                $data->tgl = Carbon::parse($request->tgl);
-                $data->jumlah = $request->jumlah;
-                $data->status = 'pending';
-
-                if($request->bukti){
-                    $fileName = time() . '.' . $request->bukti->extension();
-                    Storage::disk('public')->putFileAs('uploads/pembayaran', $request->bukti, $fileName);
-                    $data->bukti = '/uploads/pembayaran/'.$fileName;
-                }
-                $data->save();
-
-                $booking->status = 'pending';
-                $booking->save();
-
-            }catch(\QueryException $e){
-                DB::rollback();
-                return response()->json([
-                    'fail' => true,
-                    'pesan' => $e,
-                ]);
-            }
-
-            DB::commit();
-            return response()->json([
-                'fail' => false,
-            ]);
-        }
+        return view('landing.order.payment',[
+            'data' => $data
+        ]);
     }
 
     public function invoice($id)
