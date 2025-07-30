@@ -18,6 +18,7 @@
                         <i class="fa fa-print me-1"></i>
                         Download PDF
                     </a>
+                    @if(in_array(auth()->guard('admin')->user()->level, ['Marketing', 'Manager']))
                     <a href="{{ route('admin.order.edit', $data->id) }}" class="btn btn-sm btn-warning fs-base me-2">
                         <i class="fa fa-edit me-1"></i>
                         Ubah
@@ -26,6 +27,7 @@
                         <i class="fa fa-trash me-1"></i>
                         Hapus
                     </button>
+                    @endif
                 </div>
             </div>
         </div>

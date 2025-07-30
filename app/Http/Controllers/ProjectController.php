@@ -83,5 +83,60 @@ class ProjectController extends Controller
         return redirect()->back();
     }
 
-    
+    public function pdfReport($id)
+    {
+        $user = auth()->guard('web')->user();
+        $data = Project::with(['order.user', 'order.paket'])->where('id', $id)->first();
+        
+        if (!$data) {
+            abort(404, 'Project not found');
+        }
+
+        // Check if user owns this project
+        if ($data->order->user_id !== $user->id) {
+            abort(403, 'Unauthorized');
+        }
+
+        $tasks = Task::where('project_id', $id)->orderBy('tgl_tempo', 'asc')->get();
+
+        // Calculate statistics
+        $totalTasks = $tasks->count();
+        $completedTasks = $tasks->where('status', 'Disetujui')->count();
+        $pendingTasks = $tasks->where('status', 'Draft')->count();
+        $rejectedTasks = $tasks->where('status', 'Ditolak')->count();
+        $uploadedTasks = $tasks->where('status_upload', 1)->count();
+
+        // Calculate engagement metrics
+        $totalViews = $tasks->sum('total_view');
+        $totalLikes = $tasks->sum('total_likes');
+        $totalComments = $tasks->sum('total_comments');
+        $totalShares = $tasks->sum('total_share');
+        $totalEngagement = $totalLikes + $totalComments + $totalShares;
+        $engagementRate = $totalViews > 0 ? ($totalEngagement / $totalViews) * 100 : 0;
+
+        $config = [
+            'format' => 'A4',
+            'orientation' => 'P'
+        ];
+        
+        $pdf = PDF::loadView('reports.project-insights', [
+            'project' => $data,
+            'tasks' => $tasks,
+            'statistics' => [
+                'total_tasks' => $totalTasks,
+                'completed_tasks' => $completedTasks,
+                'pending_tasks' => $pendingTasks,
+                'rejected_tasks' => $rejectedTasks,
+                'uploaded_tasks' => $uploadedTasks,
+                'total_views' => $totalViews,
+                'total_likes' => $totalLikes,
+                'total_comments' => $totalComments,
+                'total_shares' => $totalShares,
+                'total_engagement' => $totalEngagement,
+                'engagement_rate' => $engagementRate
+            ]
+        ], [], $config);
+
+        return $pdf->stream('Laporan-Insights-' . $data->nama . '.pdf');
+    }
 }

@@ -9,21 +9,14 @@
                                 <a class="nav-link d-flex align-items-center justify-content-between
                                 {{ request()->is('user/pesanan', 'user/pesanan/*') ? ' active' : '' }}"
                                     href="{{ route('user.order.index')}}">
-                                    <span><i class="fa fa-fw fa-inbox opacity-50 me-1"></i> Pesanan Saya</span>
-                                </a>
-                            </li>
-                            <li class="nav-item mb-2">
-                                <a class="nav-link d-flex align-items-center justify-content-between
-                                {{ request()->is('user/pembayaran', 'user/pembayaran/*') ? ' active' : '' }}"
-                                    href="{{ route('user.payment.index') }}">
-                                    <span><i class="fa fa-fw fa-wallet opacity-50 me-1"></i> Pembayaran</span>
+                                    <span><i class="fa fa-fw fa-inbox opacity-50 me-1"></i> Transaksi</span>
                                 </a>
                             </li>
                             <li class="nav-item mb-2">
                                 <a class="nav-link d-flex align-items-center justify-content-between
                                 {{ request()->is('user/project', 'user/project/*') ? ' active' : '' }}"
                                     href="{{ route('user.project.index') }}">
-                                    <span><i class="si fa-fw si-briefcase opacity-50 me-2"></i>Project</span>
+                                    <span><i class="si fa-fw si-briefcase opacity-50 me-2"></i>Manajemen Konten</span>
                                 </a>
                             </li>
                             <li class="nav-item mb-2">

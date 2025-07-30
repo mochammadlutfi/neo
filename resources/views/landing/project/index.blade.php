@@ -4,10 +4,10 @@
         <div class="block-header">
             <h3 class="block-title fs-base fw-bold">
                 <i class="fa fa-briefcase me-2 text-primary"></i>
-                Project Saya
+                Manajemen Konten
             </h3>
             <div class="block-options">
-                <span class="fs-base text-muted">Total: {{ $data->count() }} project</span>
+                <span class="fs-base text-muted">Total: {{ $data->count() }} Project</span>
             </div>
         </div>
     </div>
@@ -45,7 +45,7 @@
                                     <i class="fa fa-tasks fa-2x text-primary"></i>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
-                                    <div class="fs-base fw-bold mb-1">{{ $d->task_count }} Tugas</div>
+                                    <div class="fs-base fw-bold mb-1">{{ $d->task_count }} Konten</div>
                                     <div class="fs-xs text-muted">{{ $d->deskripsi ?? 'Project untuk paket ' . $d->order->paket->nama }}</div>
                                 </div>
                             </div>
@@ -74,7 +74,7 @@
                             @endphp
                             <div class="mb-3">
                                 <div class="d-flex justify-content-between fs-xs text-muted mb-1">
-                                    <span>Progress Tugas</span>
+                                    <span>Progress Konten</span>
                                     <span>{{ $completedTasks }}/{{ $totalTasks }} ({{ number_format($progress, 0) }}%)</span>
                                 </div>
                                 <div class="progress" style="height: 6px;">

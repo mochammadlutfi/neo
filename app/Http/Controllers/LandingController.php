@@ -21,4 +21,10 @@ class LandingController extends Controller
         ]);
     }
 
+    
+    public function kontak()
+    {
+        return view('landing.kontak');
+    }
+
 }

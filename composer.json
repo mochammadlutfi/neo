@@ -6,7 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.0",
-        "barryvdh/laravel-dompdf": "^2.0",
+        "barryvdh/laravel-dompdf": "^2.1",
         "carlos-meneses/laravel-mpdf": "^2.1",
         "codedge/laravel-fpdf": "^1.12",
         "cviebrock/eloquent-sluggable": "^9.0",

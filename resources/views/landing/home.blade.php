@@ -8,10 +8,10 @@
                 <div class="col-md-8 py-4 d-flex align-items-center">
                     <div class="text-center text-md-start">
                         <h1 class="fw-bold fs-2 mb-3">
-                            Social Profil Management
+                            PT. Neo Kreasi Gemilang
                         </h1>
                         <p class="text-muted fw-medium mb-4">
-                            Tingkatkan penjualan bisnis Anda menggunakan Jasa Pengelolaan Media Sosial. Ada tidak perlu repot, Team NEO Agency Advertising akan melakukannya untuk Anda.</a>.
+                            Agensi kreatif digital yang terpercaya, memberikan solusi dan visual yang inovatif serta hasil nyata yang mendorong perkembangan berbagai bisnis client. Kreativitas adalah kunci untuk menjalankan sebuah bisnis.
                         </p>
                         <a class="btn btn-gd-main py-3 px-4" href="#harga">
                             <i class="fa fa-arrow-right opacity-50 me-1"></i> Pesan Sekarang
@@ -21,6 +21,33 @@
             </div>
         </div>
     </div>
+    
+    <!-- About Section -->
+    <div class="bg-white">
+        <div class="content content-full">
+            <div class="pt-7 pb-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-10">
+                        <div class="text-center mb-5">
+                            <h2 class="fw-bold mb-3">Tentang Kami</h2>
+                            <p class="fs-lg text-muted">Mengenal lebih dekat PT. Neo Kreasi Gemilang</p>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-8 mx-auto">
+                                <p class="fs-base text-muted mb-4 text-justify">
+                                    PT. Neo Kreasi Gemilang merupakan perusahaan yang bergerak di bidang industri kreatif digital. Perusahaan ini menjunjung tinggi nilai-nilai kreatif dalam pemanfaatan sumber daya manusia yang potensial. Dengan fokus menjadi wadah dalam bidang kreatif, memaparkan inovasi kreatif maupun mempertahankan kepuasan client, perusahaan ini percaya bahwa kreativitas adalah kunci untuk menjalankan sebuah bisnis.
+                                </p>
+                                <p class="fs-base text-muted mb-4 text-justify">
+                                    Menjadi agensi kreatif digital yang terpercaya, tidak hanya memberikan solusi dan visual yang inovatif, tetapi juga hasil nyata yang mendorong perkembangan berbagai bisnis client. Berkomitmen untuk menghadirkan nilai tambah dengan menjadi wadah bagi para pemikir kreatif potensial.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div class="bg-body-light">
         <div class="content content-full" id="harga">
             <div class="pt-5 pb-5">

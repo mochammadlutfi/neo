@@ -11,7 +11,7 @@
                 </p>
                 <div class="d-flex gap-2 justify-content-center">
                     <a href="{{ route('user.project.index') }}" class="btn btn-secondary fs-base">
-                        <i class="fa fa-arrow-left me-1"></i> Kembali ke Project
+                        <i class="fa fa-arrow-left me-1"></i> Kembali ke Manajemen Konten
                     </a>
                     <a href="{{ route('user.order.show', $data->order->id) }}" class="btn btn-success fs-base">
                         <i class="fa fa-credit-card me-1"></i> Bayar Sekarang
@@ -28,6 +28,10 @@
                     Detail Project: {{ $data->nama }}
                 </h3>
                 <div class="block-options">
+                    <a href="{{ route('user.project.pdf-report', $data->id) }}" class="btn btn-sm btn-success me-2 fs-base" target="_blank">
+                        <i class="fa fa-file-pdf me-1"></i>
+                        Download Laporan PDF
+                    </a>
                     <a href="{{ route('user.project.calendar', $data->id) }}" class="btn btn-sm btn-warning me-2 fs-base">
                         <i class="fa fa-calendar me-1"></i>
                         Kalender
@@ -89,7 +93,7 @@
             <div class="col-lg-4">
                 <div class="block block-rounded">
                     <div class="block-header">
-                        <h3 class="block-title fs-base fw-bold">Statistik Tugas</h3>
+                        <h3 class="block-title fs-base fw-bold">Statistik Konten</h3>
                     </div>
                     <div class="block-content">
                         @php
@@ -139,7 +143,7 @@
             <div class="block-header">
                 <h3 class="block-title fs-base fw-bold">
                     <i class="fa fa-tasks me-2 text-primary"></i>
-                    Daftar Tugas
+                    Daftar Konten
                 </h3>
                 <div class="block-options d-flex align-items-center gap-3">
                     <div class="d-flex align-items-center gap-2">

@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
+use App\Notifications\VerifikasiEmailNotification;
+use App\Notifications\ResetPasswordNotification;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, MustVerifyEmailTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -18,9 +21,11 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'nama',
         'email',
         'password',
+        'hp',
+        'perusahaan',
         'level',
     ];
 
@@ -50,6 +55,27 @@ class User extends Authenticatable
     
     public function anggota(){
         return $this->belongsTo(Anggota::class, 'anggota_id');
+    }
+
+    /**
+     * Send the email verification notification.
+     *
+     * @return void
+     */
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new VerifikasiEmailNotification);
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 
 }

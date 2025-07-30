@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PasswordResetController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,26 +16,38 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::get('/','LandingController@index')->name('home');
-Route::get('/tentang-kami','LandingController@about')->name('about');
+Route::get('/kontak','LandingController@kontak')->name('kontak');
 
-Route::get('/login','AuthController@showLogin')->name('login');
-Route::post('/login','AuthController@login');
-Route::get('/daftar','AuthController@showRegister')->name('register');
-Route::post('/daftar','AuthController@register');
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/daftar', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/daftar', [AuthController::class, 'register']);
 
-Route::prefix('/training')->name('training.')->group(function () {
-    Route::get('/','TrainingController@index')->name('index');
-    Route::get('/{slug}','TrainingController@show')->name('show');
-});
+// Password Reset Routes
+Route::get('/forgot-password', [PasswordResetController::class, 'create'])
+    ->middleware('guest')
+    ->name('password.request');
+Route::post('/forgot-password', [PasswordResetController::class, 'store'])
+    ->middleware('guest')
+    ->name('password.email');
+Route::get('/reset-password/{token}', [PasswordResetController::class, 'edit'])
+    ->middleware('guest')
+    ->name('password.reset');
+Route::post('/reset-password', [PasswordResetController::class, 'update'])
+    ->middleware('guest')
+    ->name('password.store');
 
-Route::prefix('/layanan-kami')->name('services.')->group(function () {
-    Route::get('/it-training','ServiceController@training')->name('training');
-    Route::get('/it-consultant','ServiceController@consultant')->name('consultant');
-    Route::get('/project','ServiceController@project')->name('project');
-});
+// Email Verification Routes  
+Route::get('/verify', [AuthController::class, 'showVerifyEmail'])->middleware('auth')->name('verification.notice');
+Route::get('/email/verify', [AuthController::class, 'showVerifyEmail'])->middleware('auth');
+Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])->middleware(['signed'])->name('verification.verify');
+Route::post('/email/verification-notification', [AuthController::class, 'resendVerification'])->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
-Route::middleware('auth')->name('user.')->prefix('/user')->group(function () {
-    Route::post('/logout','AuthController@logout')->name('logout');
+
+// Logout route (accessible for authenticated but unverified users)
+Route::post('/user/logout', [AuthController::class, 'logout'])->middleware('auth')->name('user.logout');
+
+Route::middleware(['auth', 'verified'])->name('user.')->prefix('/user')->group(function () {
     
     Route::name('profile.')->group(function () {
         Route::get('/profil','ProfileController@edit')->name('edit');
@@ -56,12 +70,14 @@ Route::middleware('auth')->name('user.')->prefix('/user')->group(function () {
         Route::get('/{id}/project/{project}','ProjectController@show')->name('user.project.show');
         Route::get('/{id}/project/{project}/task','ProjectController@task')->name('user.project.task');
         Route::get('/{id}/project/{project}/kalender','ProjectController@calendar')->name('user.project.calendar');
+        Route::get('/{id}/project/{project}/pdf-report','ProjectController@pdfReport')->name('user.project.pdf-report');
     });
 
     Route::prefix('/project')->name('project.')->group(function () {
         Route::get('/','ProjectController@index')->name('index');
         Route::get('/{id}','ProjectController@show')->name('show');
         Route::get('/{id}/kalender','ProjectController@calendar')->name('calendar');
+        Route::get('/{id}/pdf-report','ProjectController@pdfReport')->name('pdf-report');
         Route::post('/{id}/status','ProjectController@status')->name('status');
     });
     

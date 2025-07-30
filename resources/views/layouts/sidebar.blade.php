@@ -22,6 +22,7 @@
                             <span class="nav-main-link-name">Dashboard</span>
                         </a>
                     </li>
+                    @if(in_array(auth()->guard('admin')->user()->level, ['Marketing', 'Manager']))
                     <li class="nav-main-item">
                         <a class="nav-main-link {{ request()->is('admin/peserta') ? ' active' : '' }}" href="{{ route('admin.user.index') }}">
                             <i class="nav-main-link-icon si si-user"></i>
@@ -34,6 +35,7 @@
                             <span class="nav-main-link-name">Pemesanan</span>
                         </a>
                     </li>
+                    @endif
                     <li class="nav-main-item">
                         <a class="nav-main-link {{ request()->is('admin/journey') ? ' active' : '' }}" href="{{ route('admin.journey.index') }}">
                             <i class="nav-main-link-icon far fa-map"></i>

@@ -15,6 +15,13 @@
 
         <div class="block block-rounded">
             <div class="block-content p-4">
+                
+                @if (session('status'))
+                    <div class="alert alert-success" role="alert">
+                        {{ session('status') }}
+                    </div>
+                @endif
+
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
                     <div class="mb-4">
@@ -50,6 +57,12 @@
                         Login Sekarang
                     </button>
                 </form>
+                
+                <div class="text-center mt-3">
+                    <a href="{{ route('password.request') }}" class="text-muted">
+                        <small>Lupa Password?</small>
+                    </a>
+                </div>
             </div>
         </div>
         <!-- END Sign Up Form -->

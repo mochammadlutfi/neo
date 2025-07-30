@@ -26,6 +26,15 @@ class RedirectIfAuthenticated
                 return redirect()->route('admin.beranda');
             }
             if (Auth::guard($guard)->check()) {
+                $user = Auth::guard($guard)->user();
+                // Don't redirect if already on verification pages
+                if ($request->routeIs(['verification.notice', 'verification.verify', 'verification.send'])) {
+                    return $next($request);
+                }
+                // Check if user is authenticated but not verified
+                if ($user && !$user->hasVerifiedEmail()) {
+                    return redirect()->route('verification.notice');
+                }
                 return redirect()->route('home');
             }
         }

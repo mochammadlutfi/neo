@@ -45,8 +45,18 @@
                         
                         <ul class="nav-main nav-main-horizontal nav-main-hover me-2">
                             <li class="nav-main-item">
-                                <a class="nav-main-link" href="#harga">
-                                    <span class="nav-main-link-name">Harga</span>
+                                <a class="nav-main-link" href="{{ route('home')}}">
+                                    <span class="nav-main-link-name">Beranda</span>
+                                </a>
+                            </li>
+                            <li class="nav-main-item">
+                                <a class="nav-main-link" href="{{ route('home')}}#harga">
+                                    <span class="nav-main-link-name">Paket</span>
+                                </a>
+                            </li>
+                            <li class="nav-main-item">
+                                <a class="nav-main-link" href="{{ route('kontak')}}">
+                                    <span class="nav-main-link-name">Kontak</span>
                                 </a>
                             </li>
                         </ul>
@@ -77,7 +87,7 @@
                                     </a>
                                     <a class="dropdown-item d-flex align-items-center justify-content-between space-x-1"
                                         href="{{ route('user.order.index') }}">
-                                        <span>Pesanan Saya</span>
+                                        <span>Transaksi</span>
                                         <i class="fa fa-fw fa-user opacity-25"></i>
                                     </a>
                                     <a class="dropdown-item d-flex align-items-center justify-content-between"
