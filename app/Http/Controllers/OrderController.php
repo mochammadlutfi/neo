@@ -87,8 +87,6 @@ class OrderController extends Controller
             // Load paket relationship for email
             $data->load('paket', 'user');
 
-            // Send email notification to user
-            Mail::to($user->email)->send(new OrderCreated($data));
 
         }catch(\QueryException $e){
             DB::rollback();
@@ -150,6 +148,10 @@ class OrderController extends Controller
                 $data->bukti = '/uploads/pembayaran/'.$fileName;
             }
             $data->save();
+            
+            $order = Order::where('id', $id)->first();
+            // Send email notification to user
+            Mail::to($user->email)->send(new OrderCreated($order));
 
         }catch(\QueryException $e){
             DB::rollback();
