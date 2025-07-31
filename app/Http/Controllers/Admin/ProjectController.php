@@ -40,10 +40,51 @@ class ProjectController extends Controller
                 return $q->where('order_id', $order_id);
             })->latest()->get();
 
-            return response()->json([
-                'data' => $projects,
-                'success' => true
-            ]);
+
+            if($order_id){
+
+                return DataTables::of($projects)
+                ->addIndexColumn()
+                ->addColumn('action', function($row){
+                    $btn = '<a class="btn btn-primary btn-sm" href="'. route('admin.project.show', $row->id).'"><i class="si si-eye me-1"></i>Detail</a>';
+                    return $btn; 
+                })
+                ->editColumn('tgl_training', function ($row) {
+                    $tgl_mulai = Carbon::parse($row->tgl_mulai);
+                    $tgl_selesai = Carbon::parse($row->tgl_selesai);
+                    if($tgl_mulai->eq($tgl_selesai) || $row->tgl_selesai == null){
+                        return $tgl_mulai->translatedformat('d M Y');
+                    }else{
+                        return $tgl_mulai->translatedformat('d') . ' - '. $tgl_selesai->translatedformat('d M Y');
+                    }
+                })
+                ->editColumn('tgl_daftar', function ($row) {
+                    $tgl_mulai = Carbon::parse($row->tgl_mulai_daftar);
+                    $tgl_selesai = Carbon::parse($row->tgl_selesai_daftar);
+                    if($tgl_mulai->eq($tgl_selesai) || $row->tgl_selesai_daftar == null){
+                        return $tgl_mulai->translatedformat('d M Y');
+                    }else{
+                        return $tgl_mulai->translatedformat('d M') . ' - '. $tgl_selesai->translatedformat('d M Y');
+                    }
+                })
+                ->editColumn('status', function ($row) {
+                    if($row->status == 'draft'){
+                        return '<span class="badge bg-warning">Draft</span>';
+                    }else if($row->status == 'buka'){
+                        return '<span class="badge bg-primary">Buka</span>';
+                    }else{
+                        return '<span class="badge bg-danger">Tutup</span>';
+                    }
+                })
+                ->rawColumns(['action', 'status']) 
+                ->make(true);
+            }else{
+                
+                return response()->json([
+                    'data' => $projects,
+                    'success' => true
+                ]);
+            }
         }
         return view('admin.project.index');
     }

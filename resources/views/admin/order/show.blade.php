@@ -202,7 +202,7 @@
                 ajax: {
                     url : "{{ route('admin.payment.index') }}",
                     data : function(data){
-                        data.oder_id = "{{ $data->id }}";
+                        data.order_id = "{{ $data->id }}";
                     },
                 },
                 columns: [
