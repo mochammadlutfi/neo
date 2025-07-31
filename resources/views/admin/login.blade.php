@@ -4,9 +4,9 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-        <title>Login Admin - Infotech Global Indonesia</title>
+        <title>Login Admin - NEO Agency & Adevertising</title>
 
-        <meta name="description" content="Infotech Global Indonesia">
+        <meta name="description" content="NEO Agency & Adevertising">
         <meta name="robots" content="noindex, nofollow">
         <!-- Stylesheets -->
         <!-- Codebase framework -->
