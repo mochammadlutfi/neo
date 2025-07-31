@@ -95,10 +95,6 @@ class ProjectController extends Controller
             abort(404, 'Project not found');
         }
 
-        // Check if user owns this project
-        if ($data->order->user_id !== $user->id) {
-            abort(403, 'Unauthorized');
-        }
 
         $tasks = Task::where('project_id', $id)->orderBy('tgl_tempo', 'asc')->get();
 

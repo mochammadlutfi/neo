@@ -26,6 +26,7 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
+        
         $data = Training::orderBy('id', 'DESC')->whereNotIn('status', ['draft'])
         ->paginate(9);
 
