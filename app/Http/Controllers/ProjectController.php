@@ -23,7 +23,10 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
+        $user = auth()->guard('web')->user();
+
         $data = Project::with(['order'])
+        ->where('user_id', $user->id)
         ->withCount('task')
         ->latest()->get();
         

@@ -203,7 +203,7 @@ class ProjectController extends Controller
         DB::beginTransaction();
         try{
 
-            $data = Training::where('id', $id)->first();
+            $data = Project::where('id', $id)->first();
             $data->delete();
 
         }catch(\QueryException $e){
