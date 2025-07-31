@@ -53,7 +53,7 @@
                                 <option value="">Pilih</option>
                                 <option value="Marketing" {{ old('level', $data->level)  == 'Marketing' ? 'selected' : '' }}>Marketing</option>
                                 <option value="Content Planner" {{ old('level', $data->level)  == 'Content Planner' ? 'selected' : '' }}>Content Planner</option>
-                                <option value="Manger" {{ old('level', $data->level)  == 'Manger' ? 'selected' : '' }}>Manager</option>
+                                <option value="Manager" {{ old('level', $data->level)  == 'Manager' ? 'selected' : '' }}>Manager</option>
                             </select>
                             <x-input-error :messages="$errors->get('level')" class="mt-2" />
                         </div>

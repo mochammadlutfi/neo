@@ -32,40 +32,42 @@
                     <li class="nav-main-item">
                         <a class="nav-main-link {{ request()->is('admin/order') ? ' active' : '' }}" href="{{ route('admin.order.index') }}">
                             <i class="nav-main-link-icon si si-energy"></i>
-                            <span class="nav-main-link-name">Pemesanan</span>
+                            <span class="nav-main-link-name">Transaksi</span>
                         </a>
                     </li>
                     @endif
+                    @if(in_array(auth()->guard('admin')->user()->level, ['Content Planner', 'Manager']))
                     <li class="nav-main-item">
                         <a class="nav-main-link {{ request()->is('admin/journey') ? ' active' : '' }}" href="{{ route('admin.journey.index') }}">
                             <i class="nav-main-link-icon far fa-map"></i>
                             <span class="nav-main-link-name">Customer Journey</span>
                         </a>
                     </li>
+                    @endif
+                    @if(in_array(auth()->guard('admin')->user()->level, ['Manager']))
                     <li class="nav-main-item">
                         <a class="nav-main-link {{ request()->is('admin/paket', 'admin/paket/*') ? ' active' : '' }}" href="{{ route('admin.paket.index') }}">
                             <i class="nav-main-link-icon fa fa-boxes-stacked"></i>
                             <span class="nav-main-link-name">Paket</span>
                         </a>
                     </li>
+                    @endif
+                    @if(in_array(auth()->guard('admin')->user()->level, ['Content Planner', 'Manager']))
                     <li class="nav-main-item">
                         <a class="nav-main-link {{ request()->is('admin/project') ? ' active' : '' }}" href="{{ route('admin.project.index') }}">
                             <i class="nav-main-link-icon si si-briefcase"></i>
-                            <span class="nav-main-link-name">Proyek</span>
+                            <span class="nav-main-link-name">Manajemen Konten</span>
                         </a>
                     </li>
-                    <li class="nav-main-item">
-                        <a class="nav-main-link {{ request()->is('admin/pembayaran') ? ' active' : '' }}" href="{{ route('admin.payment.index') }}">
-                            <i class="nav-main-link-icon si si-wallet"></i>
-                            <span class="nav-main-link-name">Pembayaran</span>
-                        </a>
-                    </li>
+                    @endif
+                    @if(in_array(auth()->guard('admin')->user()->level, ['Manager']))
                     <li class="nav-main-item">
                         <a class="nav-main-link {{ request()->is('admin/staff') ? ' active' : '' }}" href="{{ route('admin.staff.index') }}">
                             <i class="nav-main-link-icon si si-user"></i>
                             <span class="nav-main-link-name">Staff</span>
                         </a>
                     </li>
+                    @endif
                 </ul>
             </div>
             <!-- END Side Navigation -->

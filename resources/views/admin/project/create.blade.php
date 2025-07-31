@@ -9,7 +9,7 @@
             <div class="block-header">
                 <h3 class="block-title fs-base fw-bold">
                     <i class="fa fa-plus me-2 text-primary"></i>
-                    Tambah Project
+                    Tambah Manajemen Konten
                 </h3>
                 <div class="block-options">
                     <a href="{{ route('admin.project.index') }}" class="btn btn-sm btn-secondary fs-base me-2">

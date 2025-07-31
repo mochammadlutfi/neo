@@ -42,7 +42,7 @@
                                 <option value="">Pilih</option>
                                 <option value="Marketing" {{ old('jk' == 'Marketing') ? 'selected' : '' }}>Marketing</option>
                                 <option value="Content Planner" {{ old('jk' == 'Content Planner') ? 'selected' : '' }}>Content Planner</option>
-                                <option value="Manger" {{ old('jk' == 'Manger') ? 'selected' : '' }}>Manager</option>
+                                <option value="Manager" {{ old('jk' == 'Manager') ? 'selected' : '' }}>Manager</option>
                             </select>
                             <x-input-error :messages="$errors->get('level')" class="mt-2" />
                         </div>
