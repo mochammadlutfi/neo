@@ -29,7 +29,7 @@ class OrderController extends Controller
             ->when(!empty($user_id), function($q) use ($user_id) {
                 return $q->where('user_id', $user_id);
             })
-            ->latest()->get();
+            ->orderBy('id', 'DESC')->get();
 
             return DataTables::of($data)
                 ->addIndexColumn()
