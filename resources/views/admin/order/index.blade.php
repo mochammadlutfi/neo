@@ -78,10 +78,10 @@
                     dom : "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
                     ajax: "{{ route('admin.order.index') }}",
                     columns: [
+                        {data: 'tgl', name: 'tgl'},
                         {data: 'nomor', name: 'nomor'},
                         {data: 'user.nama', name: 'user.nama'},
                         {data: 'paket.nama', name: 'paket.nama'},
-                        {data: 'tgl', name: 'tgl'},
                         {data: 'durasi', name: 'durasi'},
                         {data: 'tgl_selesai', name: 'tgl_selesai'},
                         {
