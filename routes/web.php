@@ -169,6 +169,9 @@ Route::prefix('/admin')->name('admin.')->namespace('Admin')->group(function(){
                 Route::get('/{id}/edit','TaskController@edit')->name('edit');
                 Route::post('{id}/confirm','TaskController@confirm')->name('confirm');
                 Route::post('{id}/update','TaskController@update')->name('update');
+                Route::post('/{id}/mark-uploaded','TaskController@markAsUploaded')->name('mark-uploaded');
+                Route::get('/{id}/engagement','TaskController@getEngagement')->name('engagement.get');
+                Route::post('/{id}/engagement','TaskController@updateEngagement')->name('engagement');
                 Route::delete('/{id}/delete','TaskController@destroy')->name('delete');
             });
 

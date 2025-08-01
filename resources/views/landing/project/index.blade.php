@@ -28,8 +28,8 @@
                                 <div>
                                     @if($d->order->status_pembayaran == 'Belum Bayar')
                                         <span class="badge bg-danger fs-xs">Belum Bayar</span>
-                                    @elseif ($d->order->status_pembayaran == 'Sebagian')
-                                        <span class="badge bg-warning fs-xs">Sebagian</span>
+                                    @elseif ($d->order->status_pembayaran == 'Down Payment')
+                                        <span class="badge bg-warning fs-xs">Down Payment</span>
                                     @else
                                         <span class="badge bg-success fs-xs">Lunas</span>
                                     @endif

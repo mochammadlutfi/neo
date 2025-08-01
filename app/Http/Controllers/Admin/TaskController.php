@@ -65,6 +65,8 @@ class TaskController extends Controller
                         return '<span class="badge bg-success">Setuju</span>';
                     }else if($row->status == 'Ditolak'){
                         return '<span class="badge bg-secondary">Ditolak</span>';
+                    }else if($row->status == 'Direvisi'){
+                        return '<span class="badge bg-info">Direvisi</span>';
                     }
                 }) 
                 ->editColumn('status_upload', function ($row) {
@@ -229,15 +231,20 @@ class TaskController extends Controller
             try{
 
                 $data = Task::where('id', $id)->first();
+                
+                // Store original status to check if it was rejected
+                $originalStatus = $data->status;
+                
                 $data->project_id = $request->project_id;
                 $data->nama = $request->nama;
                 $data->link_brief = $request->link_brief;
                 $data->tgl_tempo = $request->tgl_tempo;
                 $data->tgl_upload = $request->tgl_upload;
-                if($request->status == 'Ditolak'){
-                    $data->status = 'Draft';
+                
+                // If task was previously rejected and now being updated, set status to 'Direvisi'
+                if($originalStatus == 'Ditolak'){
+                    $data->status = 'Direvisi';
                 }
-                $data->status_upload = $request->status_upload;
 
                 if($request->file){
                     $fileName = time() . '.' . $request->file->extension();
@@ -291,42 +298,6 @@ class TaskController extends Controller
         ]);
     }
 
-    public function anggota($id, Request $request)
-    {
-        if ($request->ajax()) {
-
-            $data = DB::table("anggota_eskul as a")
-            ->select('a.*', 'b.nis', 'b.nama', 'b.kelas', 'b.hp', 'b.email', 'b.jk', 'b.alamat', 'c.nama as ekskul')
-            ->join("anggota as b", "b.id", "=", "a.anggota_id")
-            ->join("ekskul as c", "c.id", "=", "a.ekskul_id")
-            ->where('a.ekskul_id', $id)
-            ->get();
-
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('action', function($row){
-                    $actionBtn = '<a href="'.route('anggota.show', $row->id).'" class="edit btn btn-primary btn-sm">Detail</a>';
-                    return $actionBtn;
-                })
-                ->editColumn('created_at', function ($row) {
-                    return Carbon::parse($row->created_at)->translatedFormat('d F Y');
-                })
-                ->editColumn('status', function ($row) {
-                    if($row->status == 'draft'){
-                        return '<span class="badge bg-warning">Menunggu Konfirmasi</span>';
-                    }else if($row->status == 'aktif'){
-                        return '<span class="badge bg-success">Aktif</span>';
-                    }else if($row->status == 'tolak'){
-                        return '<span class="badge bg-success">Ditolak</span>';
-                    }else{
-                        return '<span class="badge bg-secondary">Keluar</span>';
-                    }
-                })
-                ->rawColumns(['action', 'status']) 
-                ->make(true);
-        }
-    }
-
     
     public function json(Request $request)
     {
@@ -338,5 +309,147 @@ class TaskController extends Controller
         ->get();
 
         return response()->json($data);
+    }
+
+    /**
+     * Mark task as uploaded
+     */
+    public function markAsUploaded($id)
+    {
+        DB::beginTransaction();
+        try {
+            $task = Task::where('id', $id)->first();
+            
+            if (!$task) {
+                return response()->json([
+                    'fail' => true,
+                    'pesan' => 'Task tidak ditemukan!'
+                ]);
+            }
+
+            $task->status_upload = 1;
+            $task->save();
+
+        } catch(\QueryException $e) {
+            DB::rollback();
+            return response()->json([
+                'fail' => true,
+                'pesan' => 'Gagal mengubah status upload!'
+            ]);
+        }
+
+        DB::commit();
+        return response()->json([
+            'fail' => false,
+            'pesan' => 'Status upload berhasil diubah!'
+        ]);
+    }
+
+    /**
+     * Get engagement data for a task
+     */
+    public function getEngagement($taskId)
+    {
+        $task = Task::where('id', $taskId)->first();
+        if (!$task) {
+            return response()->json([
+                'fail' => true,
+                'pesan' => 'Task tidak ditemukan!'
+            ]);
+        }
+
+        return response()->json([
+            'fail' => false,
+            'data' => [
+                'total_view' => $task->total_view,
+                'total_likes' => $task->total_likes,
+                'total_comments' => $task->total_comments,
+                'total_share' => $task->total_share,
+                'bukti' => $task->bukti
+            ]
+        ]);
+    }
+
+    /**
+     * Update engagement data for a task
+     */
+    public function updateEngagement(Request $request, $taskId)
+    {
+        $rules = [
+            'total_view' => 'required|integer|min:0',
+            'total_likes' => 'required|integer|min:0',
+            'total_comments' => 'required|integer|min:0',
+            'total_share' => 'required|integer|min:0',
+            'bukti' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
+        ];
+
+        $pesan = [
+            'total_view.required' => 'Total View harus diisi!',
+            'total_view.integer' => 'Total View harus berupa angka!',
+            'total_likes.required' => 'Total Likes harus diisi!',
+            'total_likes.integer' => 'Total Likes harus berupa angka!',
+            'total_comments.required' => 'Total Comments harus diisi!',
+            'total_comments.integer' => 'Total Comments harus berupa angka!',
+            'total_share.required' => 'Total Share harus diisi!',
+            'total_share.integer' => 'Total Share harus berupa angka!',
+            'bukti.file' => 'Bukti harus berupa file!',
+            'bukti.mimes' => 'Format bukti harus: JPG, JPEG, PNG, atau PDF!',
+            'bukti.max' => 'Ukuran bukti maksimal 5MB!',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $pesan);
+        if ($validator->fails()){
+            return response()->json([
+                'fail' => true,
+                'errors' => $validator->errors()
+            ]);
+        }
+
+        DB::beginTransaction();
+        try{
+            $task = Task::where('id', $taskId)->first();
+            if (!$task) {
+                return response()->json([
+                    'fail' => true,
+                    'pesan' => 'Task tidak ditemukan!'
+                ]);
+            }
+
+            // Update engagement data
+            $task->total_view = $request->total_view;
+            $task->total_likes = $request->total_likes;
+            $task->total_comments = $request->total_comments;
+            $task->total_share = $request->total_share;
+
+            // Handle file upload if provided
+            if ($request->hasFile('bukti')) {
+                // Delete old file if exists
+                if (!empty($task->bukti)) {
+                    $oldFile = str_replace('/storage', '', $task->bukti);
+                    if (Storage::disk('public')->exists($oldFile)) {
+                        Storage::disk('public')->delete($oldFile);
+                    }
+                }
+
+                $fileName = time() . '_' . $taskId . '.' . $request->bukti->extension();
+                Storage::disk('public')->putFileAs('uploads/engagement', $request->bukti, $fileName);
+                $task->bukti = '/uploads/engagement/' . $fileName;
+            }
+
+            $task->save();
+
+        } catch(\QueryException $e) {
+            DB::rollback();
+            return response()->json([
+                'fail' => true,
+                'pesan' => 'Gagal update engagement data!'
+            ]);
+        }
+
+        DB::commit();
+        return response()->json([
+            'fail' => false,
+            'pesan' => 'Engagement data berhasil diupdate!'
+        ]);
     }
 }

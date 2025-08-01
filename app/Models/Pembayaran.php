@@ -14,9 +14,12 @@ class Pembayaran extends Model
 
     
     protected $fillable = [
-        'id', 'nama',
+        'id', 'nama', 'order_id', 'tgl', 'jumlah', 'bukti', 'status'
     ];
 
+    protected $casts = [
+        'tgl' => 'datetime',
+    ];
     
     public function order(){
         return $this->belongsTo(Order::class, 'order_id');

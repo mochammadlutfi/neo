@@ -212,6 +212,8 @@
                                                                 <span class="badge bg-success fs-xs">Disetujui</span>
                                                             @elseif($d->status == 'Ditolak')
                                                                 <span class="badge bg-danger fs-xs">Ditolak</span>
+                                                            @elseif($d->status == 'Direvisi')
+                                                                <span class="badge bg-warning fs-xs">Direvisi</span>
                                                             @endif
                                                             
                                                             @if($d->status_upload == 0)
@@ -307,7 +309,7 @@
                                                     </button>
                                                 </div>
                                             </div>
-                                            <div class="block-content">
+                                            <div class="block-content p-4">
                                                 <!-- Task Info -->
                                                 <div class="row mb-4">
                                                     <div class="col-md-6">
@@ -381,6 +383,29 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
+                                                <!-- Bukti File -->
+                                                @if(!empty($d->bukti))
+                                                <div class="border-top pt-4 mt-4">
+                                                    <div class="alert alert-info d-flex align-items-center" role="alert">
+                                                        <i class="fa fa-file-alt fa-2x me-3"></i>
+                                                        <div class="flex-grow-1">
+                                                            <strong>File Bukti Tersedia</strong>
+                                                            <p class="mb-2">File bukti screenshot engagement telah diupload untuk tugas ini.</p>
+                                                            <div class="d-flex gap-2">
+                                                                <button type="button" class="btn btn-sm btn-primary" onclick="viewBukti('{{ asset($d->bukti) }}')" title="Lihat File">
+                                                                    <i class="fa fa-eye me-1"></i>
+                                                                    Lihat File
+                                                                </button>
+                                                                <a href="{{ asset($d->bukti) }}" target="_blank" class="btn btn-sm btn-success" title="Download File">
+                                                                    <i class="fa fa-download me-1"></i>
+                                                                    Download
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @endif
 
                                                 <!-- Engagement Summary -->
                                                 @php
@@ -608,6 +633,53 @@
             initializeTasks();
             updateDisplay();
         });
+
+        // Function to view bukti file
+        function viewBukti(fileUrl) {
+            // Check if file is image or PDF
+            const extension = fileUrl.split('.').pop().toLowerCase();
+            
+            if (['jpg', 'jpeg', 'png', 'gif'].includes(extension)) {
+                // Show image in modal
+                const modal = $(`
+                    <div class="modal fade" id="buktiModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">File Bukti Screenshot</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <img src="${fileUrl}" class="img-fluid" alt="Bukti Screenshot" style="max-height: 70vh;">
+                                </div>
+                                <div class="modal-footer">
+                                    <a href="${fileUrl}" target="_blank" class="btn btn-primary">
+                                        <i class="fa fa-external-link-alt me-1"></i>
+                                        Buka di Tab Baru
+                                    </a>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                
+                // Remove existing modal if any
+                $('#buktiModal').remove();
+                
+                // Add modal to body and show
+                $('body').append(modal);
+                $('#buktiModal').modal('show');
+                
+                // Clean up when modal is hidden
+                $('#buktiModal').on('hidden.bs.modal', function () {
+                    $(this).remove();
+                });
+            } else {
+                // For PDF or other files, open in new tab
+                window.open(fileUrl, '_blank');
+            }
+        }
     </script>
     @endpush
 </x-user-layout>

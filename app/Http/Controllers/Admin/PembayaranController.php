@@ -12,6 +12,8 @@ use DataTables;
 use PDF;
 use App\Models\User;
 use App\Models\Pembayaran;
+use App\Models\Order;
+use App\Notifications\PaymentStatusNotification;
 
 class PembayaranController extends Controller
 {
@@ -231,14 +233,29 @@ class PembayaranController extends Controller
     {
         DB::beginTransaction();
         try{
-            $data = Pembayaran::where('id', $id)->first();
+            $data = Pembayaran::with(['order.user'])->where('id', $id)->first();
+            
+            if (!$data) {
+                return response()->json([
+                    'fail' => true,
+                    'pesan' => 'Data pembayaran tidak ditemukan',
+                ]);
+            }
+
+            $oldStatus = $data->status;
             $data->status = $request->status;
             $data->save();
+
+            // Kirim email notifikasi jika status diubah menjadi 'terima'
+            if ($request->status === 'terima' && $oldStatus !== 'terima') {
+                $this->sendPaymentStatusNotification($data);
+            }
+
         }catch(\QueryException $e){
             DB::rollback();
             return response()->json([
                 'fail' => true,
-                'pesan' => $e,
+                'pesan' => $e->getMessage(),
             ]);
         }
 
@@ -246,6 +263,37 @@ class PembayaranController extends Controller
         return response()->json([
             'fail' => false,
         ]);
+    }
+
+    /**
+     * Send payment status notification to user
+     */
+    private function sendPaymentStatusNotification(Pembayaran $pembayaran)
+    {
+        try {
+            $order = $pembayaran->order;
+            $user = $order->user;
+            
+            // Hitung total pembayaran yang sudah diterima untuk order ini
+            $totalPembayaranDiterima = Pembayaran::where('order_id', $order->id)
+                ->where('status', 'terima')
+                ->sum('jumlah');
+            
+            // Hitung sisa pembayaran
+            $sisaPembayaran = max(0, $order->total - $totalPembayaranDiterima);
+            
+            // Tentukan status pembayaran menggunakan accessor
+            $statusPembayaran = $order->status_pembayaran;
+            
+            // Kirim notifikasi email
+            $user->notify(new PaymentStatusNotification($pembayaran, $sisaPembayaran, $statusPembayaran));
+            
+            \Log::info('Payment status notification sent to user: ' . $user->id . ' for payment: ' . $pembayaran->id);
+            
+        } catch (\Exception $e) {
+            \Log::error('Failed to send payment status notification: ' . $e->getMessage());
+            // Jangan gagalkan transaction jika email gagal dikirim
+        }
     }
 
     /**

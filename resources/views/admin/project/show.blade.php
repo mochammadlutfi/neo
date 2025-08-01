@@ -222,6 +222,8 @@
                                                             <span class="badge bg-success fs-xs">Disetujui</span>
                                                         @elseif($d->status == 'Ditolak')
                                                             <span class="badge bg-danger fs-xs">Ditolak</span>
+                                                        @elseif($d->status == 'Direvisi')
+                                                            <span class="badge bg-warning fs-xs">Direvisi</span>
                                                         @endif
                                                         
                                                         @if($d->status_upload == 0)
@@ -275,6 +277,11 @@
                                                 <button type="button" class="btn btn-sm btn-warning fs-xs" onclick="edit({{ $d->id }})" title="Edit Tugas">
                                                     <i class="fa fa-edit"></i>
                                                 </button>
+                                                @if($d->status_upload == 0)
+                                                    <button type="button" class="btn btn-sm btn-success fs-xs" onclick="markAsUploaded({{ $d->id }})" title="Tandai Sudah Upload">
+                                                        <i class="fa fa-upload"></i>
+                                                    </button>
+                                                @endif
                                                 @if($d->status_upload == 1)
                                                     <button type="button" class="btn btn-sm btn-info fs-xs" onclick="openEngagementModal({{ $d->id }}, '{{ $d->nama }}')" title="Input Engagement">
                                                         <i class="fa fa-chart-line"></i>
@@ -369,16 +376,6 @@
                                         <input type="text" class="form-control" id="field-tgl_tempo" name="tgl_tempo" placeholder="Pilih tanggal deadline">
                                         <div class="invalid-feedback" id="error-tgl_tempo"></div>
                                     </div>
-                                    
-                                    <div class="mb-3">
-                                        <label class="form-label fw-medium" for="field-link_brief">
-                                            <i class="fa fa-link me-1 text-info"></i>
-                                            Link Brief <span class="text-danger">*</span>
-                                        </label>
-                                        <input type="url" class="form-control" id="field-link_brief" name="link_brief" placeholder="https://example.com">
-                                        <div class="invalid-feedback" id="error-link_brief"></div>
-                                        <small class="text-muted">Link brief dokumen atau referensi tugas</small>
-                                    </div>
                                 </div>
                                 
                                 <div class="col-md-6">
@@ -393,27 +390,25 @@
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label fw-medium" for="field-status_upload">
-                                            <i class="fa fa-upload me-1 text-primary"></i>
-                                            Status Upload
+                                        <label class="form-label fw-medium" for="field-link_brief">
+                                            <i class="fa fa-link me-1 text-info"></i>
+                                            Link Brief <span class="text-danger">*</span>
                                         </label>
-                                        <select class="form-select" id="field-status_upload" name="status_upload">
-                                            <option value="0">Belum Upload</option>
-                                            <option value="1">Sudah Upload</option>
-                                        </select>
-                                        <div class="invalid-feedback" id="error-status_upload"></div>
+                                        <input type="url" class="form-control" id="field-link_brief" name="link_brief" placeholder="https://example.com">
+                                        <div class="invalid-feedback" id="error-link_brief"></div>
+                                        <small class="text-muted">Link brief dokumen atau referensi tugas</small>
                                     </div>
                                     
-                                    <div class="mb-3">
-                                        <label class="form-label fw-medium" for="field-file">
-                                            <i class="fa fa-file me-1 text-secondary"></i>
-                                            Upload File (Opsional)
-                                        </label>
-                                        <input class="form-control" type="file" name="file" id="field-file">
-                                        <div class="invalid-feedback" id="error-file"></div>
-                                        <small class="text-muted">Format: PDF, DOC, DOCX, PNG, JPG (Max: 10MB)</small>
-                                    </div>
                                 </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-medium" for="field-file">
+                                    <i class="fa fa-file me-1 text-secondary"></i>
+                                    Upload File (Opsional)
+                                </label>
+                                <input class="form-control" type="file" name="file" id="field-file">
+                                <div class="invalid-feedback" id="error-file"></div>
+                                <small class="text-muted">Format: PDF, DOC, DOCX, PNG, JPG (Max: 10MB)</small>
                             </div>
                         </div>
                         
@@ -467,7 +462,7 @@
     <div class="modal fade" id="engagementModal" tabindex="-1" aria-labelledby="engagementModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form id="engagementForm" onsubmit="return false;">
+                <form id="engagementForm" onsubmit="return false;" enctype="multipart/form-data">
                     <div class="block block-rounded shadow-none mb-0">
                         <div class="block-header block-header-default">
                             <h3 class="block-title">
@@ -524,6 +519,44 @@
                                         <input type="number" class="form-control fs-base" id="total_share" name="total_share" min="0" placeholder="Masukkan jumlah shares">
                                         <div class="invalid-feedback" id="error-total_share"></div>
                                     </div>
+                                </div>
+                            </div>
+
+                            <!-- Upload Bukti Section -->
+                            <div class="border-top pt-4 mt-4">
+                                <h6 class="fs-base fw-bold mb-3">
+                                    <i class="fa fa-file-image me-1 text-success"></i>
+                                    Upload Bukti Screenshot
+                                </h6>
+                                
+                                <!-- Existing File Display -->
+                                <div id="existing-bukti" class="mb-3" style="display: none;">
+                                    <div class="alert alert-info d-flex align-items-center justify-content-between" role="alert">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fa fa-file me-2"></i>
+                                            <div>
+                                                <strong>File Bukti Tersedia</strong>
+                                                <div class="fs-xs text-muted" id="existing-file-name">Klik tombol untuk melihat file</div>
+                                            </div>
+                                        </div>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-sm btn-outline-primary" id="view-existing-file" title="Lihat File">
+                                                <i class="fa fa-eye"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-success" id="download-existing-file" title="Download File">
+                                                <i class="fa fa-download"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-medium" for="bukti">
+                                        <span id="bukti-label">File Bukti Screenshot</span> <span class="text-muted">(Opsional)</span>
+                                    </label>
+                                    <input class="form-control" type="file" name="bukti" id="bukti" accept="image/*,.pdf">
+                                    <div class="invalid-feedback" id="error-bukti"></div>
+                                    <small class="text-muted">Format: JPG, PNG, PDF (Max: 5MB)</small>
                                 </div>
                             </div>
 
@@ -781,7 +814,7 @@
                 formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
                 
                 $.ajax({
-                    url: `/admin/project/task/${formData.get('task_id')}/engagement`,
+                    url: `/admin/task/${formData.get('task_id')}/engagement`,
                     method: 'POST',
                     data: formData,
                     processData: false,
@@ -850,6 +883,7 @@
                 $('#engagement-preview').hide();
                 $('.is-invalid').removeClass('is-invalid');
                 $('.invalid-feedback').empty();
+                hideExistingBukti(); // Hide bukti section when modal is closed
             });
         });
 
@@ -896,7 +930,7 @@
             
             // Load existing engagement data  
             $.ajax({
-                url: `/admin/project/task/${taskId}/engagement`,
+                url: `/admin/task/${taskId}/engagement`,
                 type: 'GET',
                 success: function(response) {
                     if (response.fail == false && response.data) {
@@ -904,17 +938,110 @@
                         $('#total_likes').val(response.data.total_likes || '');
                         $('#total_comments').val(response.data.total_comments || '');
                         $('#total_share').val(response.data.total_share || '');
+                        
+                        // Handle existing bukti file
+                        if (response.data.bukti && response.data.bukti.trim() !== '') {
+                            showExistingBukti(response.data.bukti);
+                        } else {
+                            hideExistingBukti();
+                        }
+                        
                         updateEngagementPreview();
+                    } else {
+                        hideExistingBukti();
                     }
                 },
                 error: function() {
                     // If error, just continue with empty form
+                    hideExistingBukti();
                 }
             });
             
             // Show modal
             const engagementModal = new bootstrap.Modal(document.getElementById('engagementModal'));
             engagementModal.show();
+        }
+
+        function showExistingBukti(filePath) {
+            $('#existing-bukti').show();
+            $('#bukti-label').text('Ganti File Bukti Screenshot');
+            
+            // Get filename from path
+            const fileName = filePath.split('/').pop();
+            $('#existing-file-name').text(fileName);
+            
+            // Set up view and download buttons
+            $('#view-existing-file').off('click').on('click', function() {
+                window.open(filePath, '_blank');
+            });
+            
+            $('#download-existing-file').off('click').on('click', function() {
+                // Create temporary link for download
+                const link = document.createElement('a');
+                link.href = filePath;
+                link.download = fileName;
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        }
+
+        function hideExistingBukti() {
+            $('#existing-bukti').hide();
+            $('#bukti-label').text('File Bukti Screenshot');
+        }
+
+        function markAsUploaded(taskId) {
+            Swal.fire({
+                icon: 'question',
+                title: 'Konfirmasi Upload',
+                text: 'Tandai tugas ini sebagai sudah diupload?',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Tandai!',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#28a745'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/admin/task/${taskId}/mark-uploaded`,
+                        type: 'POST',
+                        data: {
+                            _token: $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            if (response.fail == false) {
+                                Swal.fire({
+                                    toast: true,
+                                    title: "Berhasil",
+                                    text: "Status upload berhasil diubah!",
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                    icon: 'success',
+                                    position: 'top-end'
+                                }).then(() => {
+                                    reloadTasks();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal!',
+                                    text: response.pesan || 'Terjadi kesalahan.',
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        },
+                        error: function(xhr) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: 'Terjadi kesalahan server. Silakan coba lagi.',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    });
+                }
+            });
         }
 
         function detail(id){

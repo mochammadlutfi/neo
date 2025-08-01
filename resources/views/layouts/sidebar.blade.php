@@ -52,6 +52,14 @@
                         </a>
                     </li>
                     @endif
+                    @if(in_array(auth()->guard('admin')->user()->level, ['Marketing', 'Manager']))
+                    <li class="nav-main-item">
+                        <a class="nav-main-link {{ request()->is('admin/pembayaran', 'admin/pembayaran/*') ? ' active' : '' }}" href="{{ route('admin.payment.index') }}">
+                            <i class="nav-main-link-icon fa fa-wallet"></i>
+                            <span class="nav-main-link-name">Pembayaran</span>
+                        </a>
+                    </li>
+                    @endif
                     @if(in_array(auth()->guard('admin')->user()->level, ['Content Planner', 'Manager']))
                     <li class="nav-main-item">
                         <a class="nav-main-link {{ request()->is('admin/project') ? ' active' : '' }}" href="{{ route('admin.project.index') }}">

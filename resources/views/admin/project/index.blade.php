@@ -104,7 +104,7 @@
                         <select class="form-select fs-base" id="payment-filter">
                             <option value="">Semua Status Pembayaran</option>
                             <option value="Belum Bayar">Belum Bayar</option>
-                            <option value="Sebagian">Sebagian</option>
+                            <option value="Down Payment">Down Payment</option>
                             <option value="Lunas">Lunas</option>
                         </select>
                     </div>
@@ -216,8 +216,8 @@
                 function updateStatistics() {
                     const totalProjects = allProjects.length;
                     const activeProjects = allProjects.filter(p => p.order.status_pembayaran === 'Lunas').length;
-                    const totalTasks = allProjects.reduce((sum, p) => sum + (p.task_count || 0), 0);
-                    const pendingTasks = allProjects.reduce((sum, p) => sum + (p.pending_tasks || 0), 0);
+                    const totalTasks = allProjects.reduce((sum, p) => sum + parseInt(p.task_count || 0, 10), 0);
+                    const pendingTasks = allProjects.reduce((sum, p) => sum + parseInt(p.pending_tasks || 0, 10), 0);
 
                     $('#total-projects').text(totalProjects);
                     $('#active-projects').text(activeProjects);
@@ -295,14 +295,13 @@
                     const completedTasks = project.completed_tasks || 0;
                     const totalTasks = project.task_count || 0;
                     const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
-
                     let statusBadge = '';
                     switch(project.order.status_pembayaran) {
                         case 'Belum Bayar':
                             statusBadge = '<span class="badge bg-danger fs-xs">Belum Bayar</span>';
                             break;
-                        case 'Sebagian':
-                            statusBadge = '<span class="badge bg-warning fs-xs">Sebagian</span>';
+                        case 'Down Payment':
+                            statusBadge = '<span class="badge bg-warning fs-xs">Down Payment</span>';
                             break;
                         case 'Lunas':
                             statusBadge = '<span class="badge bg-success fs-xs">Lunas</span>';

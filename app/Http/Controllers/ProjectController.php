@@ -25,13 +25,29 @@ class ProjectController extends Controller
     {
         $user = auth()->guard('web')->user();
 
-        $data = Project::with(['order'])
+        $query = Project::with(['order.payment'])
         ->where('user_id', $user->id)
-        ->withCount('task')
-        ->latest()->get();
+        ->withCount('task');
+
+        // Filter berdasarkan status pembayaran jika ada
+        if ($request->has('status_pembayaran') && $request->status_pembayaran != '') {
+            $query->whereHas('order', function($q) use ($request) {
+                // Kita akan filter di collection karena status_pembayaran adalah accessor
+            });
+        }
+
+        $data = $query->latest()->get();
+
+        // Filter berdasarkan status pembayaran menggunakan accessor
+        if ($request->has('status_pembayaran') && $request->status_pembayaran != '') {
+            $data = $data->filter(function($project) use ($request) {
+                return $project->order->status_pembayaran == $request->status_pembayaran;
+            });
+        }
         
         return view('landing.project.index',[
-            'data' => $data
+            'data' => $data,
+            'selectedStatus' => $request->status_pembayaran
         ]);
     }
 

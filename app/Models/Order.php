@@ -15,6 +15,10 @@ class Order extends Model
     protected $fillable = [
         'user_id', 'paket_id', 'nomor', 'durasi', 'harga', 'tgl', 'status', 'total', 'tgl_selesai', 'tgl_tempo'
     ];
+
+    protected $appends = [
+        'status_pembayaran'
+    ];
     
     public function user(){
         return $this->belongsTo(User::class, 'user_id');
@@ -39,7 +43,7 @@ class Order extends Model
         if ($totalPembayaran == 0) {
             return 'Belum Bayar';
         } elseif ($totalPembayaran < $this->total) {
-            return 'Sebagian';
+            return 'Down Payment';
         } else {
             return 'Lunas';
         }

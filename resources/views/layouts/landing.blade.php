@@ -98,7 +98,7 @@
                                     <div class="dropdown-divider"></div>
                                     <form method="POST" action="{{ route('user.logout') }}">
                                         @csrf
-                                        <a class="dropdown-item d-flex align-items-center justify-content-between space-x-1" :href="route('user.logout')"
+                                        <a class="dropdown-item d-flex align-items-center justify-content-between space-x-1" href="#"
                                         onclick="event.preventDefault(); this.closest('form').submit();">
                                             <span>Keluar</span>
                                             <i class="fa fa-fw fa-sign-out-alt opacity-25"></i>

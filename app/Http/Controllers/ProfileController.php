@@ -37,13 +37,16 @@ class ProfileController extends Controller
     {
         $rules = [
             'nama' => 'required|string',
-            'username' => 'required|unique:users,username',
+            'perusahaan' => 'nullable|string',
+            'email' => 'required|email|unique:users,email,' . auth()->user()->id,
+            'hp' => 'nullable|string',
         ];
 
         $pesan = [
             'nama.required' => 'Nama Lengkap Wajib Diisi!',
-            'username.required' => 'Username Wajib Diisi!',
-            'username.unique' => 'Username Sudah Terdaftar!',
+            'email.required' => 'Email Wajib Diisi!',
+            'email.email' => 'Format Email Tidak Valid!',
+            'email.unique' => 'Email Sudah Terdaftar!',
         ];
 
         $validator = Validator::make($request->all(), $rules, $pesan);
@@ -55,16 +58,18 @@ class ProfileController extends Controller
                 
                 $data = User::where('id', auth()->user()->id)->first();
                 $data->nama = $request->nama;
-                $data->username = $request->username;
+                $data->perusahaan = $request->perusahaan;
+                $data->email = $request->email;
+                $data->hp = $request->hp;
                 $data->save();
 
             }catch(\QueryException $e){
                 DB::rollback();
-                dd($e);
+                return back()->with('error', 'Terjadi kesalahan saat menyimpan data.');
             }
 
             DB::commit();
-            return redirect()->route('home');
+            return back()->with('success', 'Profil berhasil diupdate!');
         }
     }
 
@@ -79,32 +84,41 @@ class ProfileController extends Controller
     public function passwordUpdate(Request $request)
     {
         $rules = [
-            'password' => 'required|same:password_confirmation',
+            'old_password' => 'required',
+            'password' => 'required|min:8|same:password_conf',
+            'password_conf' => 'required',
         ];
 
         $pesan = [
-            'password.required' => 'Password Wajib Diisi!',
+            'old_password.required' => 'Password Lama Wajib Diisi!',
+            'password.required' => 'Password Baru Wajib Diisi!',
+            'password.min' => 'Password Minimal 8 Karakter!',
             'password.same' => 'Konfirmasi Password Tidak Sama!',
+            'password_conf.required' => 'Konfirmasi Password Wajib Diisi!',
         ];
         
         $validator = Validator::make($request->all(), $rules, $pesan);
         if ($validator->fails()){
             return back()->withInput()->withErrors($validator->errors());
-        }else{
-            DB::beginTransaction();
-            try{
-                
-                $data = User::where('id', auth()->user()->id)->first();
-                $data->password = Hash::make($request->password);
-                $data->save();
-
-            }catch(\QueryException $e){
-                DB::rollback();
-                dd($e);
-            }
-
-            DB::commit();
-            return redirect()->route('beranda');
         }
+
+        // Verify old password
+        $user = User::find(auth()->user()->id);
+        if (!Hash::check($request->old_password, $user->password)) {
+            return back()->with('error', 'Password lama tidak sesuai!');
+        }
+
+        DB::beginTransaction();
+        try{
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+        }catch(\QueryException $e){
+            DB::rollback();
+            return back()->with('error', 'Terjadi kesalahan saat menyimpan password.');
+        }
+
+        DB::commit();
+        return back()->with('success', 'Password berhasil diubah!');
     }
 }

@@ -26,7 +26,7 @@ class ProjectController extends Controller
             $order_id = $request->order_id;
             
             $projects = Project::with(['user', 'order' => function($q){
-                return $q->with('paket');
+                return $q->with(['paket', 'payment']);
             }, 'task' => function($q) {
                 $q->select('project_id', 'status', DB::raw('COUNT(*) as count'))
                   ->groupBy('project_id', 'status');
@@ -40,6 +40,12 @@ class ProjectController extends Controller
                 return $q->where('order_id', $order_id);
             })->latest()->get();
 
+            // Filter berdasarkan status pembayaran menggunakan accessor
+            if ($request->has('status_pembayaran') && $request->status_pembayaran != '') {
+                $projects = $projects->filter(function($project) use ($request) {
+                    return $project->order->status_pembayaran == $request->status_pembayaran;
+                });
+            }
 
             if($order_id){
 
