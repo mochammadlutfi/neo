@@ -34,7 +34,7 @@
                         </button>
                     </div>
                     @error('old_password')
-                        <div class="invalid-feedback">{{ $message }}</div>
+                        <div class="text-danger fs-sm">{{ $message }}</div>
                     @enderror
                 </div>
                 
@@ -47,7 +47,7 @@
                         </button>
                     </div>
                     @error('password')
-                        <div class="invalid-feedback">{{ $message }}</div>
+                        <div class="text-danger fs-sm">{{ $message }}</div>
                     @enderror
                 </div>
                 
@@ -60,7 +60,7 @@
                         </button>
                     </div>
                     @error('password_conf')
-                        <div class="invalid-feedback">{{ $message }}</div>
+                        <div class="text-danger fs-sm">{{ $message }}</div>
                     @enderror
                 </div>
                 

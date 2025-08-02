@@ -24,10 +24,10 @@
                 <table class="table table-bordered datatable w-100 table-vcenter">
                     <thead>
                         <tr>
+                            <th width="200px">Tgl Pemesanan</th>
                             <th width="250px">Nomor</th>
                             <th width="300px">Konsumen</th>
                             <th width="200px">Paket</th>
-                            <th width="200px">Tgl Pemesanan</th>
                             <th width="200px">Durasi</th>
                             <th width="200px">Tgl Selesai</th>
                             <th width="60px">Aksi</th>

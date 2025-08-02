@@ -36,7 +36,7 @@
                         </a>
                     </li>
                     @endif
-                    @if(in_array(auth()->guard('admin')->user()->level, ['Content Planner', 'Manager']))
+                    @if(in_array(auth()->guard('admin')->user()->level, ['Content Planner', 'Manager', 'Marketing']))
                     <li class="nav-main-item">
                         <a class="nav-main-link {{ request()->is('admin/journey') ? ' active' : '' }}" href="{{ route('admin.journey.index') }}">
                             <i class="nav-main-link-icon far fa-map"></i>

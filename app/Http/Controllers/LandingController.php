@@ -14,7 +14,7 @@ class LandingController extends Controller
     public function index()
     {
 
-        $paket = Paket::orderBy('id', 'ASC')->get();
+        $paket = Paket::orderBy('id', 'DESC')->get();
         // dd(explode(',', $paket->fitur));
         return view('landing.home',[
             'paket' => $paket
