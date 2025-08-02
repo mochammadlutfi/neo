@@ -205,7 +205,6 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($request->all());
         $rules = [
             'nama' => 'required',
             'link_brief' => 'required',

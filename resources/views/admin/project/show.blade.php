@@ -1164,6 +1164,21 @@
 
         $("#formData").on("submit",function (e) {
             e.preventDefault();
+            
+            // Show loading state
+            const submitBtn = $('#btn-simpan');
+            const originalText = submitBtn.html();
+            const isEditing = $('#field-id').val();
+            const loadingText = isEditing ? 
+                '<i class="fa fa-spinner fa-spin me-1"></i> Mengupdate...' : 
+                '<i class="fa fa-spinner fa-spin me-1"></i> Menyimpan...';
+            
+            submitBtn.prop('disabled', true).html(loadingText);
+            
+            // Clear previous errors
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').empty();
+            
             var fomr = $('form#formData')[0];
             var formData = new FormData(fomr);
             let token   = $("meta[name='csrf-token']").attr("content");
@@ -1205,8 +1220,17 @@
                     }
                 },
                 error: function (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Terjadi kesalahan server. Silakan coba lagi.',
+                        confirmButtonText: 'OK'
+                    });
+                },
+                complete: function() {
+                    // Restore button state
+                    submitBtn.prop('disabled', false).html(originalText);
                 }
-
             });
 
         });
