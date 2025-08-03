@@ -312,10 +312,10 @@ class OrderController extends Controller
           $data = array();
           foreach($fetchData as $row) {
             // Hanya tampilkan pesanan yang belum lunas
-            if ($row->status_pembayaran !== 'Lunas') {
+            // if ($row->status_pembayaran !== 'Lunas') {
                 $text = $row->nomor . ' - ' . $row->user->nama . ' (Status: ' . $row->status_pembayaran . ')';
                 $data[] = array("id" =>$row->id, "text"=> $text);
-            }
+            // }
           }
 
           return response()->json($data);
