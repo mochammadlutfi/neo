@@ -67,7 +67,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="block-content tab-content overflow-hidden">
+            <div class="block-content tab-content">
                 <div class="tab-pane fade show active" id="btabs-project" role="tabpanel"
                     aria-labelledby="btabs-project-tab" tabindex="0">
                     <table class="table table-bordered w-100" id="tableProject">
@@ -130,13 +130,13 @@
                             <div class="block-content fs-sm">
                                 <input type="hidden" name="booking_id" value="{{ $data->id }}"/>
                                 <div class="mb-4">
-                                    <label for="field-tgl">Tanggal</label>
-                                    <input type="text" class="form-control" id="field-tgl" name="tgl" placeholder="Masukan Tanggal">
+                                    <label for="field-tgl1">Tanggal</label>
+                                    <input type="text" class="form-control" id="field-tgl1" name="tgl" placeholder="Masukan Tanggal">
                                     <div class="invalid-feedback" id="error-tgl">Invalid feedback</div>
                                 </div>
                                 <div class="mb-4">
-                                    <label for="field-jumlah">Jumlah</label>
-                                    <input type="number" value="{{ $data->total_bayar - $data->bayar_sum_jumlah }}" class="form-control" id="field-jumlah" name="jumlah" placeholder="Masukan Jumlah">
+                                    <label for="field-jumlah2">Jumlah</label>
+                                    <input type="number" value="{{ $data->total_bayar - $data->bayar_sum_jumlah }}" class="form-control" id="field-jumlah2" name="jumlah" placeholder="Masukan Jumlah">
                                     <div class="invalid-feedback" id="error-jumlah">Invalid feedback</div>
                                 </div>
                                 <div class="mb-4">
@@ -183,6 +183,61 @@
                                 </div>
                             </div>
                             <div id="detailPembayaran">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="modal-form" aria-labelledby="modal-form" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <form id="formData" onsubmit="return false;" enctype="multipart/form-data">
+                        <div class="block block-rounded shadow-none mb-0">
+                            <div class="block-header bg-gd-dusk">
+                                <h3 class="block-title text-white" id="modalFormTitle">Pembayaran</h3>
+                                <div class="block-options">
+                                    <button type="button" class="text-white btn-block-option" data-bs-dismiss="modal" aria-label="Close">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="block-content fs-sm">
+                                <input type="hidden" name="id" id="field-id">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-4">
+                                            <label for="field-order_id">No Pemesanan</label>
+                                            <select class="form-select" id="field-order_id" style="width: 100%;"
+                                                name="order_id" data-placeholder="Pilih Pesanan">
+                                            </select>
+                                            <div class="invalid-feedback" id="error-order_id">Invalid feedback</div>
+                                        </div>
+                                        <x-input-field type="text" id="tgl" name="tgl" label="Tanggal" :required="true" isAjax/>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <x-input-field type="number" id="jumlah" name="jumlah" label="Jumlah" :required="true" isAjax/>
+                                        <div class="mb-4">
+                                            <label class="form-label" for="field-bukti">Bukti Bayar</label>
+                                            <input class="form-control" type="file" name="bukti" id="field-bukti">
+                                            <div class="invalid-feedback" id="error-bukti">Invalid feedback</div>
+                                            <div id="current-bukti" class="mt-2" style="display: none;">
+                                                <small class="text-muted">File saat ini:</small>
+                                                <img id="preview-bukti" src="" alt="Current Bukti" class="img-thumbnail" style="max-width: 200px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="block-content block-content-full block-content-sm text-end border-top">
+                                <button type="button" class="btn btn-alt-danger px-4 rounded-pill" data-bs-dismiss="modal">
+                                    <i class="fa fa-times me-1"></i>
+                                    Batal
+                                </button>
+                                <button type="submit" class="btn btn-alt-primary px-4 rounded-pill" id="btn-simpan">
+                                    <i class="fa fa-check me-1"></i>
+                                    Simpan
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -253,6 +308,71 @@
                 });
         });
 
+
+        function resetForm() {
+                $('#formData')[0].reset();
+                $('#field-id').val('');
+                $('#field-order_id').val(null).trigger('change');
+                $('#current-bukti').hide();
+                $('.form-control').removeClass('is-invalid');
+                $('.invalid-feedback').html('');
+                $('#modalFormTitle').text('Tambah Pembayaran');
+            }
+            
+            function editPayment(id){
+                $.ajax({
+                    url: "/admin/pembayaran/" + id + "/edit",
+                    type: "GET",
+                    success: function (response) {
+                        if (response.fail == false) {
+                            // Reset form first
+                            resetForm();
+                            
+                            // Fill form with data
+                            $('#field-id').val(response.data.id);
+                            $('#field-jumlah').val(response.data.jumlah);
+                            $('#field-tgl').val(response.data.tgl);
+                            
+                            // Set order selection
+                            var option = new Option(response.data.order_nomor, response.data.order_id, true, true);
+                            $('#field-order_id').append(option).trigger('change');
+                            
+                            // Show current bukti if exists
+                            if (response.data.bukti) {
+                                $('#preview-bukti').attr('src', response.data.bukti);
+                                $('#current-bukti').show();
+                            }
+                            
+                            $('#modalFormTitle').text('Edit Pembayaran');
+                            
+                            var modalForm = bootstrap.Modal.getOrCreateInstance(document.getElementById('modal-form'));
+                            modalForm.show();
+                        } else {
+                            Swal.fire({
+                                toast: true,
+                                title: "Gagal",
+                                text: response.message || "Gagal mengambil data!",
+                                timer: 1500,
+                                showConfirmButton: false,
+                                icon: 'error',
+                                position: 'top-end'
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        Swal.fire({
+                            toast: true,
+                            title: "Gagal",
+                            text: "Terjadi kesalahan di server!",
+                            timer: 1500,
+                            showConfirmButton: false,
+                            icon: 'error',
+                            position: 'top-end'
+                        });
+                    }
+                });
+            }
+
         $("#field-tgl").flatpickr({
             altInput: true,
             altFormat: "j F Y",
@@ -279,6 +399,57 @@
             });
         }
 
+        $("#formData").on("submit",function (e) {
+                e.preventDefault();
+                var fomr = $('form#formData')[0];
+                var formData = new FormData(fomr);
+                let token   = $("meta[name='csrf-token']").attr("content");
+                formData.append('_token', token);
+
+                var id = $("#field-id").val();
+
+                $.ajax({
+                    url:  "/admin/pembayaran/"+id+"/update",
+                    type: "POST",
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.fail == false) {
+                            $('#tablePayment').DataTable().ajax.reload();
+                            const el = document.getElementById('modal-form');
+                            var myModal = bootstrap.Modal.getOrCreateInstance(el);
+                            myModal.hide();
+                            resetForm();
+                            
+                            Swal.fire({
+                                toast: true,
+                                title: "Berhasil",
+                                text: "Data berhasil disimpan!",
+                                timer: 1500,
+                                showConfirmButton: false,
+                                icon: 'success',
+                                position: 'top-end'
+                            });
+                        } else {
+                            // Clear previous errors
+                            $('.form-control').removeClass('is-invalid');
+                            $('.invalid-feedback').html('');
+                            
+                            // Show new errors
+                            for (control in response.errors) {
+                                $('#field-' + control).addClass('is-invalid');
+                                $('#error-' + control).html(response.errors[control]);
+                            }
+                        }
+                    },
+                    error: function (error) {
+                    }
+
+                });
+
+            });
         function updateStatus(id, status){
                 // console.log(status);
                 $.ajax({

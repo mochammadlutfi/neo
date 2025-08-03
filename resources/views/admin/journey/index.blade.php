@@ -8,10 +8,12 @@
                     Customer Journey
                 </h3>
                 <div class="block-options">
+                    @if(in_array(auth()->guard('admin')->user()->level, ['Marketing']))
                     <a href="{{ route('admin.journey.create') }}" class="btn btn-sm btn-primary fs-base">
                         <i class="fa fa-plus me-1"></i>
                         Tambah Journey
                     </a>
+                    @endif
                 </div>
             </div>
         </div>
@@ -45,10 +47,12 @@
                                             aria-labelledby="dropdown-default-outline-primary" style="">
                                             <a class="dropdown-item" href="{{ route('admin.journey.show', $d->id) }}"><i
                                                     class="si si-eye me-1"></i>Detail</a>
+                                            @if(in_array(auth()->guard('admin')->user()->level, ['Marketing']))
                                             <a class="dropdown-item" href="{{ route('admin.journey.edit', $d->id) }}"><i
                                                     class="si si-note me-1"></i>Ubah</a>
                                             <a class="dropdown-item" href="javascript:void(0)"
                                                 onclick="hapus({{ $d->id }})"><i class="si si-trash me-1"></i>Hapus</a>
+                                            @endif
                                         </div>
                                     </div>
                                 </td>

@@ -19,6 +19,7 @@
                 </div>
             </div>
         </div>
+        <input type="hidden" id="adminLevel" value="{{  auth()->guard('admin')->user()->level }}" />
         <div class="block rounded">
             <div class="block-content p-4">
                 <div class="row">
@@ -37,10 +38,12 @@
                 Tahapan
             </div>
             <div class="space-x">
+                @if(in_array(auth()->guard('admin')->user()->level, ['Marketing']))
                 <button class="btn btn-alt-primary btn-sm" onclick="openModal()">
                     <i class="fa fa-plus me-1"></i>
                     Tambah Tahapan
                 </button>
+                @endif
             </div>
         </div>
         <div class="block rounded">
@@ -65,9 +68,11 @@
                         <tr id="touchPointRow">
                             <th width="100px">Touch Point</th>
                         </tr>
+                        @if(in_array(auth()->guard('admin')->user()->level, ['Marketing']))
                         <tr id="actionRow">
                             <th width="100px">Aksi</th>
                         </tr>
+                        @endif
                     </tbody>
                 </table>
                 <div class="text-center p-4" id="journeyEmpty">
@@ -176,6 +181,8 @@
                     if(data.length){
                         $("#journeyEmpty").hide();
                         $("#journeyTable").show();
+
+                        var adminLevel = $("#adminLevel").val();
                         
                         $("#stageRow").find("td").remove();
                         $("#experienceRow").find("td").remove();
@@ -192,10 +199,12 @@
                             $("#expectationRow").append("<td>" + item.expectation + "</td>");
                             $("#feelingsRow").append("<td>" + item.feeling + "</td>");
                             $("#touchPointRow").append("<td>" + item.touch_point + "</td>");
-                            $("#actionRow").append(`<td>
-                                <button class="btn btn-sm btn-primary" onclick="ubah(${item.id})">Ubah</button>
-                                <button class="btn btn-sm btn-danger" onclick="hapus(${item.id})">Hapus</button>
-                            </td>`);
+                            if(adminLevel == 'Marketing'){
+                                $("#actionRow").append(`<td>
+                                    <button class="btn btn-sm btn-primary" onclick="ubah(${item.id})">Ubah</button>
+                                    <button class="btn btn-sm btn-danger" onclick="hapus(${item.id})">Hapus</button>
+                                </td>`);
+                            }
                         });
                     }else{
                         $("#journeyEmpty").show();

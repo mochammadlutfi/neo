@@ -8,6 +8,7 @@
                     Kelola Konsumen
                 </h3>
                 <div class="block-options">
+                    @if(in_array(auth()->guard('admin')->user()->level, ['Manager']))
                     <a href="{{ route('admin.user.create') }}" class="btn btn-sm btn-primary fs-base">
                         <i class="fa fa-plus me-1"></i>
                         Tambah Konsumen

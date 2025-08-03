@@ -17,7 +17,7 @@
                         <span class="badge bg-success">Disetujui</span>
                     @elseif($data->status == 'Ditolak')
                         <span class="badge bg-danger">Ditolak</span>
-                    @elseif($d->status == 'Direvisi')
+                    @elseif($data->status == 'Direvisi')
                         <span class="badge bg-warning fs-xs">Direvisi</span>
                     @endif
                     

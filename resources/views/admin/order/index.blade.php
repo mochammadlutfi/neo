@@ -8,10 +8,12 @@
                     Kelola Pesanan
                 </h3>
                 <div class="block-options">
+                    @if(in_array(auth()->guard('admin')->user()->level, ['Manager']))
                     <a href="{{ route('admin.order.create') }}" class="btn btn-sm btn-primary fs-base me-2">
                         <i class="fa fa-plus me-1"></i>
                         Tambah
                     </a>
+                    @endif
                     <button type="button" class="btn btn-sm btn-info fs-base" data-bs-toggle="modal" data-bs-target="#reportModal">
                         <i class="fa fa-print me-1"></i>
                         Download Report

@@ -38,7 +38,7 @@ class PembayaranController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
                     $btn = '<div class="btn-group" role="group">';
-                    $btn .= '<button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">';
+                    $btn .= '<button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-boundary="window" data-bs-toggle="dropdown" aria-expanded="false">';
                     $btn .= '<i class="fa fa-cog me-1"></i>Aksi';
                     $btn .= '</button>';
                     $btn .= '<ul class="dropdown-menu">';
