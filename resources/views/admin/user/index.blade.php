@@ -13,6 +13,7 @@
                         <i class="fa fa-plus me-1"></i>
                         Tambah Konsumen
                     </a>
+                    @endif
                 </div>
             </div>
         </div>
