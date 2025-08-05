@@ -12,7 +12,7 @@
     <div class="content content-full">
         <div class="pt-5 pb-5">
             <!-- About Section -->
-            <div class="row justify-content-center mb-5">
+            <div class="row justify-content-center mb-5" id="about">
                 <div class="col-lg-10">
                     <h4 class="fw-bold mb-3 text-center">Tentang Kami</h4>
                     <div class="row">
@@ -83,6 +83,16 @@
     <!-- Google Maps Section -->
     <div class="bg-body-light">
         <div class="content content-full">
+
+            <div class="block block-rounded">
+                <div class="block-content">
+                  <div class="py-3 text-center">
+                    <h1 class="h2 fw-bold mb-2">Hubungi Kami</h1>
+                    <h2 class="h5 fw-medium text-muted">Mari berkolaborasi dan wujudkan ide kreatif Anda bersama kami!</h2>
+                  </div>
+                </div>
+              </div>
+
             <div class="pt-5 pb-5">
                 <div class="row justify-content-center">
                     <div class="col-lg-10">
