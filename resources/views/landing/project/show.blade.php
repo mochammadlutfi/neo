@@ -28,10 +28,12 @@
                     Detail Project: {{ $data->nama }}
                 </h3>
                 <div class="block-options">
+                    @if($task->where('status_upload', 1)->count())
                     <a href="{{ route('user.project.pdf-report', $data->id) }}" class="btn btn-sm btn-success me-2 fs-base" target="_blank">
                         <i class="fa fa-file-pdf me-1"></i>
                         Download Laporan PDF
                     </a>
+                    @endif
                     <a href="{{ route('user.project.calendar', $data->id) }}" class="btn btn-sm btn-warning me-2 fs-base">
                         <i class="fa fa-calendar me-1"></i>
                         Kalender

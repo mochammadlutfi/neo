@@ -60,7 +60,7 @@
                                 </a>
                             </li>
                             <li class="nav-main-item">
-                                <a class="nav-main-link" href="{{ route('kontak')}}">
+                                <a class="nav-main-link" href="{{ route('kontak')}}#kontak">
                                     <span class="nav-main-link-name">Kontak</span>
                                 </a>
                             </li>

@@ -18,7 +18,7 @@
                         <i class="fa fa-print me-1"></i>
                         Download PDF
                     </a>
-                    @if(in_array(auth()->guard('admin')->user()->level, ['Marketing', 'Manager']))
+                    @if(in_array(auth()->guard('admin')->user()->level, ['Marketing']))
                     <a href="{{ route('admin.order.edit', $data->id) }}" class="btn btn-sm btn-warning fs-base me-2">
                         <i class="fa fa-edit me-1"></i>
                         Ubah

@@ -26,6 +26,8 @@ class PembayaranController extends Controller
     {
         if ($request->ajax()) {
             $order_id = $request->order_id;
+            $user = auth()->guard('admin')->user();
+
             $data = Pembayaran::with(['order' => function($q){
                 return $q->with('user');
             }])
@@ -36,7 +38,7 @@ class PembayaranController extends Controller
 
             return DataTables::of($data)
                 ->addIndexColumn()
-                ->addColumn('action', function($row){
+                ->addColumn('action', function($row) use ($user){
                     $btn = '<div class="btn-group" role="group">';
                     $btn .= '<button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-boundary="window" data-bs-toggle="dropdown" aria-expanded="false">';
                     $btn .= '<i class="fa fa-cog me-1"></i>Aksi';
@@ -46,9 +48,11 @@ class PembayaranController extends Controller
                     
                     // Hanya tampilkan Edit dan Hapus jika status bukan 'terima'
                     if ($row->status !== 'terima') {
-                        $btn .= '<li><a class="dropdown-item" href="javascript:void(0)" onclick="editPayment('. $row->id .')"><i class="fa fa-edit me-2"></i>Edit</a></li>';
-                        $btn .= '<li><hr class="dropdown-divider"></li>';
-                        $btn .= '<li><a class="dropdown-item text-danger" href="javascript:void(0)" onclick="hapus('. $row->id .')"><i class="fa fa-trash me-2"></i>Hapus</a></li>';
+                        if(in_array($user->level, ['Marketing'])){
+                            $btn .= '<li><a class="dropdown-item" href="javascript:void(0)" onclick="editPayment('. $row->id .')"><i class="fa fa-edit me-2"></i>Edit</a></li>';
+                            $btn .= '<li><hr class="dropdown-divider"></li>';
+                            $btn .= '<li><a class="dropdown-item text-danger" href="javascript:void(0)" onclick="hapus('. $row->id .')"><i class="fa fa-trash me-2"></i>Hapus</a></li>';
+                        }
                     } else {
                         $btn .= '<li><hr class="dropdown-divider"></li>';
                         $btn .= '<li><span class="dropdown-item-text text-muted"><i class="fa fa-lock me-2"></i>Pembayaran sudah diterima</span></li>';

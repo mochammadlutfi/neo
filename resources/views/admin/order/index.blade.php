@@ -8,7 +8,7 @@
                     Kelola Pesanan
                 </h3>
                 <div class="block-options">
-                    @if(in_array(auth()->guard('admin')->user()->level, ['Manager']))
+                    @if(in_array(auth()->guard('admin')->user()->level, ['Marketing']))
                     <a href="{{ route('admin.order.create') }}" class="btn btn-sm btn-primary fs-base me-2">
                         <i class="fa fa-plus me-1"></i>
                         Tambah
