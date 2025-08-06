@@ -8,10 +8,12 @@
                     Kelola Project
                 </h3>
                 <div class="block-options">
+                    @if(in_array(auth()->guard('admin')->user()->level, ['Content Planner']))
                     <a href="{{ route('admin.project.create') }}" class="btn btn-sm btn-primary fs-base">
                         <i class="fa fa-plus me-1"></i>
                         Tambah Project
                     </a>
+                    @endif
                 </div>
             </div>
         </div>
