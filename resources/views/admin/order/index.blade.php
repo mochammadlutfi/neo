@@ -31,6 +31,7 @@
                             <th width="300px">Konsumen</th>
                             <th width="200px">Paket</th>
                             <th width="200px">Durasi</th>
+                            <th width="150px">Status</th>
                             <th width="200px">Tgl Selesai</th>
                             <th width="60px">Aksi</th>
                         </tr>
@@ -86,6 +87,7 @@
                         {data: 'user.nama', name: 'user.nama'},
                         {data: 'paket.nama', name: 'paket.nama'},
                         {data: 'durasi', name: 'durasi'},
+                        {data: 'status', name: 'status'},
                         {data: 'tgl_selesai', name: 'tgl_selesai'},
                         {
                             data: 'action', 

@@ -47,12 +47,12 @@ class OrderController extends Controller
                     return Carbon::parse($row->tgl)->addMonth($row->durasi)->translatedformat('d M Y');
                 })
                 ->editColumn('status', function ($row) {
-                    if($row->status == 'draft'){
-                        return '<span class="badge bg-warning">Draft</span>';
-                    }else if($row->status == 'buka'){
-                        return '<span class="badge bg-primary">Buka</span>';
+                    if($row->status == 'pending'){
+                        return '<span class="badge bg-secondary">Pending</span>';
+                    }else if($row->status == 'proses'){
+                        return '<span class="badge bg-warning">Proses</span>';
                     }else{
-                        return '<span class="badge bg-danger">Tutup</span>';
+                        return '<span class="badge bg-success">selesai</span>';
                     }
                 })
                 ->rawColumns(['action', 'status', 'tgl_selesai']) 
@@ -305,6 +305,8 @@ class OrderController extends Controller
                 return $q->where('nomor','LIKE',  '%' . $cari .'%');
             })->when(isset($user_id), function($q) use($user_id){
                 return $q->where('user_id', $user_id);
+            })->when(isset($request->status), function($q, $status) {
+                return $q->where('status', $status);
             })
             ->orderBy('created_at', 'DESC')
             ->get();

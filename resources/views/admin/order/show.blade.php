@@ -38,6 +38,18 @@
                         <x-show-field label="Konsumen" value="{{ $data->user->nama }}"/>
                         <x-show-field label="Tanggal pesan" value="{{ \Carbon\Carbon::parse($data->tgl)->translatedFormat('d F Y') }}"/>
                         <x-show-field label="Harga per bulan" value="Rp {{ number_format($data->paket->harga,0,',','.') }}"/>
+                        <div class="row mb-2">
+                            <label class="col-sm-4 fw-medium">Status</label>
+                            <div class="col-sm-8">
+                                : @if ($data->status == 'pending')
+                                    <span class="badge bg-secondary">Pending</span> 
+                                @elseif($data->status == 'proses')
+                                    <span class="badge bg-warning">Proses</span>
+                                @else
+                                    <span class="badge bg-success">Selesai</span>
+                                @endif
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <x-show-field label="Paket" value="{{ $data->paket->nama }}"/>

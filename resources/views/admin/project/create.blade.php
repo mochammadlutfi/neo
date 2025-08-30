@@ -80,7 +80,8 @@
                 data: function (params) {
                     return {
                         searchTerm: params.term,
-                        user_id : $('#field-user_id').val()
+                        user_id : $('#field-user_id').val(),
+                        status : "proses"
                     };
                 },
                 processResults: function (response) {

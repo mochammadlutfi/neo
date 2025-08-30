@@ -76,6 +76,7 @@ class JourneyController extends Controller
                 $data->user_id = $request->customer_id;
                 $data->order_id = $request->order_id;
                 $data->goal = $request->goal;
+                $data->status = 'aktif';
                 $data->save();
 
             }catch(\QueryException $e){

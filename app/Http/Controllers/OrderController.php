@@ -80,8 +80,7 @@ class OrderController extends Controller
             // Calculate tgl_selesai (order date + duration in months)
             $data->tgl_selesai = Carbon::today()->addMonths($request->lama);
             
-            // Calculate tgl_tempo (tgl_selesai - 1 week)
-            $data->tgl_tempo = Carbon::today()->addMonths($request->lama)->subWeek();
+            $data->tgl_tempo = Carbon::today()->addDays(7);
             
             $data->save();
 

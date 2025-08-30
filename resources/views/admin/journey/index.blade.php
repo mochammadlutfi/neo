@@ -24,6 +24,7 @@
                         <tr>
                             <th width="60px">No</th>
                             <th width="400px">Konsumen</th>
+                            <th width="150px">Status</th>
                             <th width="200px">Pesanan</th>
                             <th width="200px">Goal</th>
                             <th width="60px">Aksi</th>
@@ -34,6 +35,13 @@
                             <tr>
                                 <td>{{ $loop->index + 1}}</td>
                                 <td>{{ $d->user->nama }}</td>
+                                <td>
+                                    @if($d->status =='aktif')
+                                        <span class="badge bg-success">Aktif</span>
+                                    @else
+                                        <span class="badge bg-danger">Tidak Aktif</span>
+                                    @endif
+                                </td>
                                 <td>{{ $d->order->nomor }}</td>
                                 <td>{{ $d->goal }}</td>
                                 <td>

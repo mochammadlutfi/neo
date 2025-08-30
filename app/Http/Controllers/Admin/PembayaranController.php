@@ -253,6 +253,10 @@ class PembayaranController extends Controller
             // Kirim email notifikasi jika status diubah menjadi 'terima'
             if ($request->status === 'terima' && $oldStatus !== 'terima') {
                 $this->sendPaymentStatusNotification($data);
+
+                $order = Order::find($data->order_id);
+                $order->status = 'proses';
+                $order->save();
             }
 
         }catch(\QueryException $e){

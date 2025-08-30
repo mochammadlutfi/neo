@@ -102,7 +102,6 @@ class AuthController extends Controller
         $rules = [
             'nama' => 'required|string',
             'email' => 'required|email|unique:users,email',
-            'perusahaan' => 'required',
             'hp' => 'required',
             'password' => 'required|same:password_conf',
             'password_conf' => 'required'
