@@ -20,7 +20,7 @@
                                     <x-input-field type="text" id="nama" name="nama" label="Nama Lengkap"/>
                                 </div>
                                 <div class="col-md-6">
-                                    <x-input-field type="text" id="perusahaan" name="perusahaan" label="Nama Perusahaan"/>
+                                    <x-input-field type="text" id="perusahaan" name="perusahaan" label="Nama Perusahaan (Optional)"/>
                                 </div>
                             </div>
                             <div class="row">
