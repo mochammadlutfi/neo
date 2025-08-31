@@ -27,6 +27,10 @@
                         <i class="fa fa-trash me-1"></i>
                         Hapus
                     </button>
+                    <button type="button" class="btn btn-sm btn-info fs-base" onclick="orderStatus()">
+                        <i class="fa fa-check me-1"></i>
+                        Ubah Status
+                    </button>
                     @endif
                 </div>
             </div>
@@ -592,6 +596,75 @@
                     }
                 })
             }
+
+            
+            function orderStatus(){
+                Swal.fire({
+                    icon : 'warning',
+                    title: 'Update Status Pesanan',
+                    input: 'select',
+                    inputOptions: {
+                        'proses': 'Proses',
+                        'selesai': 'Selesai',
+                        'batal': 'Batal'
+                    },
+                    inputPlaceholder: 'Pilih Status',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Ubah!',
+                    cancelButtonText: `Tidak, Jangan!`,
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'Silakan pilih status terlebih dahulu!'
+                        }
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ route('admin.order.status', $data->id )}}",
+                            type: "POST",
+                            data : {status : result.value}, // <== status dikirim dari pilihan user
+                            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                            success: function(data) {
+                                if(data.fail == false){
+                                    Swal.fire({
+                                        toast : true,
+                                        title: "Berhasil",
+                                        text: "Status berhasil diperbarui!",
+                                        timer: 1500,
+                                        showConfirmButton: false,
+                                        icon: 'success',
+                                        position : 'top-end'
+                                    }).then(() => {
+                                        window.location = "{{ route('admin.order.index') }}";
+                                    });
+                                }else{
+                                    Swal.fire({
+                                        toast : true,
+                                        title: "Gagal",
+                                        text: "Status gagal diperbarui!",
+                                        timer: 1500,
+                                        showConfirmButton: false,
+                                        icon: 'error',
+                                        position : 'top-end'
+                                    });
+                                }
+                            },
+                            error: function() {
+                                Swal.fire({
+                                    toast : true,
+                                    title: "Gagal",
+                                    text: "Terjadi kesalahan di server!",
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                    icon: 'error',
+                                    position : 'top-end'
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+
         $("#form-payment").on("submit",function (e) {
             e.preventDefault();
             var fomr = $('form#form-payment')[0];

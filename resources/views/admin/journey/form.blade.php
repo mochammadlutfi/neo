@@ -76,7 +76,8 @@
                 url: "{{ route('admin.order.json') }}",
                 type: "GET",
                 data: { 
-                    user_id: userId 
+                    user_id: userId,
+                    status : "proses"
                 },
                 success: function(data) {
                     console.log(orderVal);

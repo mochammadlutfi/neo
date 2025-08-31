@@ -236,42 +236,38 @@ class OrderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function status(Request $request)
+    public function status($id, Request $request)
     {
-        $rules = [
-            'status' => 'required',
-        ];
+        DB::beginTransaction();
+        try{
+            $data = Order::where('id', $id)->first();
+            $data->status = $request->status;
+            $data->save();
 
-        $pesan = [
-            'status.required' => 'Status Wajib Diisi!',
-        ];
-
-        $validator = Validator::make($request->all(), $rules, $pesan);
-        if ($validator->fails()){
-            return response()->json([
-                'fail' => true,
-                'errors' => $validator->errors()
-            ]);
-        }else{
-            DB::beginTransaction();
-            try{
-                $data = Training::where('id', $request->id)->first();
-                $data->status = $request->status;
-                $data->save();
-
-            }catch(\QueryException $e){
-                DB::rollback();
-                return response()->json([
-                    'fail' => true,
-                    'pesan' => $e,
-                ]);
+            if($request->status == 'selesai') {
+                $journey = Journey::where('order_id', $id)->first();
+                $journey->status = 'tidak aktif';
+                $journey->save();
             }
 
-            DB::commit();
+            if($request->status == 'proses') {
+                $journey = Journey::where('order_id', $id)->first();
+                $journey->status = 'aktif';
+                $journey->save();
+            }
+
+        }catch(\QueryException $e){
+            DB::rollback();
             return response()->json([
-                'fail' => false,
+                'fail' => true,
+                'pesan' => $e,
             ]);
         }
+
+        DB::commit();
+        return response()->json([
+            'fail' => false,
+        ]);
     }
 
     
@@ -330,6 +326,8 @@ class OrderController extends Controller
             return $q->where('id', $id);
         })->when($request->user_id, function($q, $id){
             return $q->where('user_id', $id);
+        })->when($request->status, function($q, $status){
+            return $q->where('status', $status);
         });
         if($request->id){
             $data = $elq->first();

@@ -129,11 +129,11 @@ Route::prefix('/admin')->name('admin.')->namespace('Admin')->group(function(){
                 Route::get('/','OrderController@index')->name('index');
                 Route::get('/create','OrderController@create')->name('create');
                 Route::post('/store','OrderController@store')->name('store');
-                Route::post('/status','OrderController@status')->name('status');
                 Route::post('/select','OrderController@select')->name('select');
                 Route::get('/report','OrderController@report')->name('report');
                 Route::get('/json','OrderController@json')->name('json');
                 Route::get('/{id}','OrderController@show')->name('show');
+                Route::post('/{id}/status','OrderController@status')->name('status');
                 Route::get('/{id}/edit','OrderController@edit')->name('edit');
                 Route::post('{id}/update','OrderController@update')->name('update');
                 Route::delete('/{id}/delete','OrderController@destroy')->name('delete');
